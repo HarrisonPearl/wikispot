@@ -42,7 +42,7 @@ function init() {
           var distanceFromUser = coordDistance(nearbyWikis[i].lat, nearbyWikis[i].lon, userPos.coords.latitude, userPos.coords.longitude, "M");
           var element = document.createElement('div');
           element.setAttribute("class", "wikicard")
-          element.innerHTML = nearbyWikis[i].title;
+          element.innerHTML = "<a href=" + makeWikiLink(nearbyWikis[i].title) + ">" + nearbyWikis[i].title + "</a>";
           document.getElementById("card-list").appendChild(element);
         }
         console.log("num of wikis");
@@ -61,6 +61,12 @@ function init() {
   );
 
   startCompass();
+}
+
+function makeWikiLink(title) {
+  let link = "https://en.wikipedia.org/wiki/" + title.replaceAll(" ", "_");
+  console.log(link);
+  return link;
 }
 
 function coordDistance(lat1, lon1, lat2, lon2, unit) {
