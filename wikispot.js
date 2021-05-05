@@ -42,7 +42,7 @@ function init() {
           var distanceFromUser = coordDistance(nearbyWikis[i].lat, nearbyWikis[i].lon, userPos.coords.latitude, userPos.coords.longitude, "M");
           var element = document.createElement('div');
           element.setAttribute("class", "wikicard")
-          element.innerHTML = "<a href=" + makeWikiLink(nearbyWikis[i].title) + ">" + nearbyWikis[i].title + "</a>";
+          element.innerHTML = "<a href=" + makeWikiLink(nearbyWikis[i].title) + ">" + nearbyWikis[i].title + " " + distanceFromUser.toFixed(2).toString() + " mi" + "</a>";
           document.getElementById("card-list").appendChild(element);
         }
         console.log("num of wikis");
