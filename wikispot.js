@@ -51,6 +51,7 @@ function init() {
             "</div>";
           document.getElementById("card-list").appendChild(element);
         }
+        startCompasses();
         console.log("num of wikis");
         console.log(nearbyWikis.length);
       })
@@ -66,7 +67,6 @@ function init() {
     navigator.userAgent.match(/AppleWebKit/)
   );
 
-  startCompasses();
 }
 
 function makeWikiLink(title) {
@@ -115,8 +115,8 @@ function startCompasses() {
 
 function handler(e) {
   compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
-  for (compassCircle in compassCircles){
-    compassCircle.style.transform = `translate(-50%, -50%) rotate(${-compass}deg)`;
+  for (i = 0; i < compassCircles.length; i++){
+    compassCircles[i].style.transform = `translate(-50%, -50%) rotate(${-compass}deg)`;
   }
 }
 
