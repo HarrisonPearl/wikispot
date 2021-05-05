@@ -1,4 +1,4 @@
-let compassCircle;
+let compassCircles;
 let myPoint;
 let compass;
 let isIOS;
@@ -58,7 +58,7 @@ function init() {
   }
 
   
-  compassCircle = document.querySelector(".compass-circle");
+  compassCircles = document.querySelectorAll(".compass-circle");
   startBtn = document.querySelector(".start-btn");
   myPoint = document.querySelector(".my-point");
   isIOS = (
@@ -66,7 +66,7 @@ function init() {
     navigator.userAgent.match(/AppleWebKit/)
   );
 
-  startCompass();
+  startCompasses();
 }
 
 function makeWikiLink(title) {
@@ -97,7 +97,7 @@ function coordDistance(lat1, lon1, lat2, lon2, unit) {
 	}
 }
 
-function startCompass() {
+function startCompasses() {
   if (isIOS) {
     DeviceOrientationEvent.requestPermission()
       .then((response) => {
@@ -115,7 +115,9 @@ function startCompass() {
 
 function handler(e) {
   compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
-  compassCircle.style.transform = `translate(-50%, -50%) rotate(${-compass}deg)`;
+  for (compassCircle in compassCircles){
+    compassCircle.style.transform = `translate(-50%, -50%) rotate(${-compass}deg)`;
+  }
 }
 
 window.onload = init;
