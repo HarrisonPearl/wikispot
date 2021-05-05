@@ -1,13 +1,17 @@
-const compassCircle = document.querySelector(".compass-circle");
-const startBtn = document.querySelector(".start-btn");
-const myPoint = document.querySelector(".my-point");
+let compassCircle;
+let myPoint;
 let compass;
-const isIOS = !(
-  navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
-  navigator.userAgent.match(/AppleWebKit/)
-);
+let isIOS;
 
 function init() {
+  compassCircle = document.querySelector(".compass-circle");
+  startBtn = document.querySelector(".start-btn");
+  myPoint = document.querySelector(".my-point");
+  isIOS = (
+    navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
+    navigator.userAgent.match(/AppleWebKit/)
+  );
+
   startBtn.addEventListener("click", startCompass);
 }
 
@@ -32,4 +36,4 @@ function handler(e) {
   compassCircle.style.transform = `translate(-50%, -50%) rotate(${-compass}deg)`;
 }
 
-init();
+window.onload = init;

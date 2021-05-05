@@ -16,7 +16,7 @@
     transform: translateX(-50%);
     border-style: solid;
     border-width: 30px 20px 0 20px;
-    border-color: purple transparent transparent transparent;
+    border-color: orangered transparent transparent transparent;
     z-index: 1;
   }
   
