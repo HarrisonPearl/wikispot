@@ -51,6 +51,7 @@ function init() {
             "</div>";
           document.getElementById("card-list").appendChild(element);
         }
+        compassCircles = document.querySelectorAll(".compass-circle");
         startCompasses();
         console.log("num of wikis");
         console.log(nearbyWikis.length);
@@ -59,7 +60,6 @@ function init() {
   }
 
   
-  compassCircles = document.querySelectorAll(".compass-circle");
   startBtn = document.querySelector(".start-btn");
   myPoint = document.querySelector(".my-point");
   isIOS = (
@@ -115,6 +115,8 @@ function startCompasses() {
 
 function handler(e) {
   compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
+  console.log("compass circles");
+  console.log(compassCircles);
   for (i = 0; i < compassCircles.length; i++){
     compassCircles[i].style.transform = `translate(-50%, -50%) rotate(${-compass}deg)`;
   }
