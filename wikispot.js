@@ -12,7 +12,7 @@ function init() {
     navigator.userAgent.match(/AppleWebKit/)
   );
 
-  startBtn.addEventListener("click", startCompass);
+  startCompass();
 }
 
 function startCompass() {
