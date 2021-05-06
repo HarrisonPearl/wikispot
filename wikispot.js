@@ -22,7 +22,7 @@ function init() {
 function buildCardList(){
   window.navigator.geolocation
     .getCurrentPosition(generateCards, console.log);
-    
+
   if (isIOS) {
     DeviceOrientationEvent.requestPermission()
       .then((response) => {
@@ -36,6 +36,8 @@ function buildCardList(){
   } else {
     window.addEventListener("deviceorientationabsolute", handler, true);
   }
+
+  startBtn.remove();
 }
 
 function generateCards(userPos){
@@ -114,28 +116,14 @@ function coordDistance(lat1, lon1, lat2, lon2, unit) {
 	}
 }
 
-function startCompasses() {
-  if (isIOS) {
-    DeviceOrientationEvent.requestPermission()
-      .then((response) => {
-        if (response === "granted") {
-          window.addEventListener("deviceorientation", handler, true);
-        } else {
-          alert("has to be allowed!");
-        }
-      })
-      .catch((response) => alert(response));
-  } else {
-    window.addEventListener("deviceorientationabsolute", handler, true);
-  }
-}
-
 function handler(e) {
   compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
   console.log("compass circles");
   console.log(compassCircles);
-  for (i = 0; i < compassCircles.length; i++){
-    compassCircles[i].style.transform = `translate(-50%, -50%) rotate(${-compass}deg)`;
+  if (compassCircles != undefined){
+    for (i = 0; i < compassCircles.length; i++){
+      compassCircles[i].style.transform = `translate(-50%, -50%) rotate(${-compass}deg)`;
+    }
   }
 }
 
