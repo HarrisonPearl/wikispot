@@ -74,7 +74,7 @@ function generateCards(userPos){
         let element = document.createElement('div');
         element.setAttribute("class", "wikicard")
         element.innerHTML = 
-          "<a href=" + makeWikiLink(nearbyWikis[i].title) + ">" + nearbyWikis[i].title + "</a>" +
+          "<a href=" + makeWikiLink(nearbyWikis[i].title) + "><p>" + nearbyWikis[i].title + "</p></a>" +
           "<a class='compass' href='https://www.google.com/maps/search/?api=1&query=" + nearbyWikis[i].lat.toString() + "," + nearbyWikis[i].lon.toString() + "'>" +
             "<div class='distance'>" + distanceFromUser.toFixed(2).toString() + " mi</div>" +
             "<div class='arrow'></div>" +
