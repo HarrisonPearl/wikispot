@@ -91,13 +91,13 @@ a​:hover {
   .compass > .compass-circle,
   .compass > .my-point {
     position: absolute;
-    width: 80%;
-    height: 80%;
+    width: 88%;
+    height: 88%;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     transition: transform 0.0s ease-out;
-    background: url(https://cdn.onlinewebfonts.com/svg/img_467023.png) center
+    background: url(mincompass.png) center
       no-repeat;
     background-size: contain;
   }
