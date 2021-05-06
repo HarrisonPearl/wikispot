@@ -30,7 +30,7 @@ html {background-color: rgb(246, 246, 246)}
     width: 80%;
     height: 80%;
     top: 50%;
-    left: 50%;
+    left: 47.5%;
     transform: translate(-50%, -50%);
     transition: transform 0.1s ease-out;
     background: url(https://cdn.onlinewebfonts.com/svg/img_467023.png) center
