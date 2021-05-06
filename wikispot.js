@@ -12,8 +12,7 @@ function init() {
   );
   // check if Geolocation available 
   if (window.navigator.geolocation) {
-    buildCardList()
-    startBtn.addEventListener("click", startCompasses);          
+    startBtn.addEventListener("click", buildCardList);          
   }
   else {
     alert("please enable geolocation services")
@@ -22,7 +21,21 @@ function init() {
 
 function buildCardList(){
   window.navigator.geolocation
-      .getCurrentPosition(generateCards, console.log);
+    .getCurrentPosition(generateCards, console.log);
+    
+  if (isIOS) {
+    DeviceOrientationEvent.requestPermission()
+      .then((response) => {
+        if (response === "granted") {
+          window.addEventListener("deviceorientation", handler, true);
+        } else {
+          alert("has to be allowed!");
+        }
+      })
+      .catch((response) => alert(response));
+  } else {
+    window.addEventListener("deviceorientationabsolute", handler, true);
+  }
 }
 
 function generateCards(userPos){
