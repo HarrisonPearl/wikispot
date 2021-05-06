@@ -134,12 +134,12 @@ a​:hover {
 }
 
 .wikicard {
-  line-height: 20vh; 
+  line-height: 18vh; 
   vertical-align: middle;
   width: 98%;
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: 1vh;
+  margin-bottom: 0.3vw;
   border-radius: 6px;
   display: flex;
   flex-direction: row;
