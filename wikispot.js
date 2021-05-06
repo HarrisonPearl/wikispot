@@ -12,7 +12,7 @@ function init() {
   );
   // check if Geolocation available 
   if (window.navigator.geolocation) {
-    generateCards();
+    buildCardList()
     startBtn.addEventListener("click", startCompasses);          
   }
   else {
