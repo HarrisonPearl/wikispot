@@ -4,69 +4,73 @@ let compass;
 let isIOS;
 
 function init() {
-  if (window.navigator.geolocation) {
-    // Geolocation available
-    window.navigator.geolocation
-      .getCurrentPosition(generateCards, console.log);          
-  }   
-
-  function generateCards(userPos){
-    var url = "https://en.wikipedia.org/w/api.php"; 
-
-    var params = {
-      action: "query",
-      list: "geosearch",
-      gscoord: userPos.coords.latitude.toString() + "|" + userPos.coords.longitude.toString(),
-      gsradius: "800",
-      gslimit: "20",
-      format: "json"
-    };
-
-    var nearbyWikis = [];
-
-    url = url + "?origin=*";
-    Object.keys(params).forEach(function(key){url += "&" + key + "=" + params[key];});
-
-    fetch(url)
-      .then(function(response){return response.json();})
-      .then(function(response) {
-        var pages = response.query.geosearch;
-        for (var place in pages) {
-          console.log(pages[place].title);
-          console.log(pages[place].lat);
-          console.log(pages[place].lon);
-          nearbyWikis.push(pages[place]);
-        }
-        for (i = 0; i < nearbyWikis.length; i++){
-          console.log(nearbyWikis[i]);
-          var distanceFromUser = coordDistance(nearbyWikis[i].lat, nearbyWikis[i].lon, userPos.coords.latitude, userPos.coords.longitude, "M");
-          var element = document.createElement('div');
-          element.setAttribute("class", "wikicard")
-          element.innerHTML = 
-            "<a href=" + makeWikiLink(nearbyWikis[i].title) + ">" + nearbyWikis[i].title + " " + distanceFromUser.toFixed(2).toString() + " mi" + "</a>" +
-            "<div class='compass'>" +
-              "<div class='arrow'></div>" +
-              "<div class='compass-circle'></div>" +
-              "<div class='my-point'></div>" +
-            "</div>";
-          document.getElementById("card-list").appendChild(element);
-        }
-        compassCircles = document.querySelectorAll(".compass-circle");
-        startCompasses();
-        console.log("num of wikis");
-        console.log(nearbyWikis.length);
-      })
-      .catch(function(error){console.log(error);});
-  }
-
-  
   startBtn = document.querySelector(".start-btn");
   myPoint = document.querySelector(".my-point");
   isIOS = (
     navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
     navigator.userAgent.match(/AppleWebKit/)
   );
+  // check if Geolocation available 
+  if (window.navigator.geolocation) {
+    startBtn.addEventListener("click", buildCardList);          
+  }
+  else {
+    alert("please enable geolocation services")
+  }
+}
 
+function buildCardList(){
+  window.navigator.geolocation
+      .getCurrentPosition(generateCards, console.log);
+}
+
+function generateCards(userPos){
+  var url = "https://en.wikipedia.org/w/api.php"; 
+
+  var params = {
+    action: "query",
+    list: "geosearch",
+    gscoord: userPos.coords.latitude.toString() + "|" + userPos.coords.longitude.toString(),
+    gsradius: "800",
+    gslimit: "20",
+    format: "json"
+  };
+
+  var nearbyWikis = [];
+
+  url = url + "?origin=*";
+  Object.keys(params).forEach(function(key){url += "&" + key + "=" + params[key];});
+
+  fetch(url)
+    .then(function(response){return response.json();})
+    .then(function(response) {
+      var pages = response.query.geosearch;
+      for (var place in pages) {
+        console.log(pages[place].title);
+        console.log(pages[place].lat);
+        console.log(pages[place].lon);
+        nearbyWikis.push(pages[place]);
+      }
+      for (i = 0; i < nearbyWikis.length; i++){
+        console.log(nearbyWikis[i]);
+        var distanceFromUser = coordDistance(nearbyWikis[i].lat, nearbyWikis[i].lon, userPos.coords.latitude, userPos.coords.longitude, "M");
+        var element = document.createElement('div');
+        element.setAttribute("class", "wikicard")
+        element.innerHTML = 
+          "<a href=" + makeWikiLink(nearbyWikis[i].title) + ">" + nearbyWikis[i].title + " " + distanceFromUser.toFixed(2).toString() + " mi" + "</a>" +
+          "<div class='compass'>" +
+            "<div class='arrow'></div>" +
+            "<div class='compass-circle'></div>" +
+            "<div class='my-point'></div>" +
+          "</div>";
+        document.getElementById("card-list").appendChild(element);
+      }
+      compassCircles = document.querySelectorAll(".compass-circle");
+      startCompasses();
+      console.log("num of wikis");
+      console.log(nearbyWikis.length);
+    })
+    .catch(function(error){console.log(error);});
 }
 
 function makeWikiLink(title) {
