@@ -117,7 +117,7 @@ function coordDistance(lat1, lon1, lat2, lon2, unit) {
 }
 
 function handler(e) {
-  compass = e.webkitCompassHeading;//;
+  compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
   console.log("compass");
   console.log(e.webkitCompassHeading);
   console.log(Math.abs(e.alpha - 360));
