@@ -44,9 +44,8 @@ a​:hover {
   padding: 16px 32px;
   text-align: center;
   text-decoration: none;
-  font-size: x-large;
   display: inline-block;
-  font-size: 16px;
+  font-size: xx-large;
   transition-duration: 0.4s;
   cursor: pointer;
   border-radius: 2px;
@@ -90,7 +89,7 @@ a​:hover {
   vertical-align: middle;
   text-align: center;
   font-family: "Hoefler Text", "Baskerville Old Face", Garamond, "Times New Roman", serif; 
-  font-size: 24px; 
+  font-size: x-large; 
   font-style: normal; 
   font-variant: normal; 
   font-weight: 1000; 
@@ -148,7 +147,7 @@ a​:hover {
   padding-left: 2vw;
 
   font-family: "Hoefler Text", "Baskerville Old Face", Garamond, "Times New Roman", serif; 
-  font-size: 32px; 
+  font-size: xx-large; 
   font-style: normal; 
   font-variant: normal; 
   font-weight: 900; 
