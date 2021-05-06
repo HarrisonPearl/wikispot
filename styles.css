@@ -13,6 +13,7 @@ h1 {
   font-variant: normal;
   text-transform: uppercase;
   text-align: center;
+  margin-bottom: 10vw;
 }
 
 a {
@@ -55,7 +56,7 @@ a​:hover {
 .start-btn {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 500%;
   transform: translate(-50%, -50%);
   background-color: white; 
   color: grey; 
@@ -72,86 +73,89 @@ a​:hover {
     width: 15vh;
     height: 15vh;
     border-radius: 50%;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     margin-right: 2vw;
     margin-top: auto;
     margin-bottom: auto;
+    box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px;
   }
 
-  .compass > .distance {
-    position: absolute;
-    z-index: 1;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+.compass > .distance {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 
-    height: 10px;
-    line-height: 10px; 
-    vertical-align: middle;
-    text-align: center;
-    font-family: "Hoefler Text", "Baskerville Old Face", Garamond, "Times New Roman", serif; 
-    font-size: 24px; 
-    font-style: normal; 
-    font-variant: normal; 
-    font-weight: 1000; 
-  }
-  
-  .compass > .arrow {
-    position: absolute;
-    width: 0;
-    height: 0;
-    top: -1vh;
-    left: 50%;
-    transform: translateX(-50%);
-    border-style: solid;
-    border-width: 2vh 1.5vh 0 1.5vh;
-    border-color: royalblue transparent transparent transparent;
-    z-index: 1;
-  }
-  
-  .compass > .compass-circle,
-  .compass > .my-point {
-    position: absolute;
-    width: 88%;
-    height: 88%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    transition: transform 0.0s ease-out;
-    background: url(mincompass.png) center
-      no-repeat;
-    background-size: contain;
-  }
-  
-  .compass > .my-point {
-    opacity: 0;
-    width: 20%;
-    height: 20%;
-    background: rgb(8, 223, 69);
-    border-radius: 50%;
-    transition: opacity 0.5s ease-out;
-  }
+  height: 10px;
+  line-height: 10px; 
+  vertical-align: middle;
+  text-align: center;
+  font-family: "Hoefler Text", "Baskerville Old Face", Garamond, "Times New Roman", serif; 
+  font-size: 24px; 
+  font-style: normal; 
+  font-variant: normal; 
+  font-weight: 1000; 
+}
 
-  .wikicard {
-    line-height: 20vh; 
-    vertical-align: middle;
-    width: 98%;
-    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.1);
-    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.1);
-    -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.1);
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 1vh;
-    border-radius: 6px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    background-color: white;
-    padding-left: 2vw;
+.compass > .arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  top: -1vh;
+  left: 50%;
+  transform: translateX(-50%);
+  border-style: solid;
+  border-width: 2vh 1.5vh 0 1.5vh;
+  border-color: royalblue transparent transparent transparent;
+  z-index: 1;
+}
 
-    font-family: "Hoefler Text", "Baskerville Old Face", Garamond, "Times New Roman", serif; 
-    font-size: 32px; 
-    font-style: normal; 
-    font-variant: normal; 
-    font-weight: 900; 
-  }
+.compass > .compass-circle,
+.compass > .my-point {
+  filter: drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 0.2));
+  position: absolute;
+  width: 88%;
+  height: 88%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: transform 0.0s ease-out;
+  background: url(mincompass.png) center
+    no-repeat;
+  background-size: contain;
+}
+
+.compass > .my-point {
+  opacity: 0;
+  width: 20%;
+  height: 20%;
+  background: rgb(8, 223, 69);
+  border-radius: 50%;
+  transition: opacity 0.5s ease-out;
+}
+
+.wikicard {
+  line-height: 20vh; 
+  vertical-align: middle;
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1vh;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: white;
+  padding-left: 2vw;
+
+  font-family: "Hoefler Text", "Baskerville Old Face", Garamond, "Times New Roman", serif; 
+  font-size: 32px; 
+  font-style: normal; 
+  font-variant: normal; 
+  font-weight: 900; 
+}
+
+body {
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
