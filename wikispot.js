@@ -107,7 +107,7 @@ function startCompasses() {
           alert("has to be allowed!");
         }
       })
-      .catch(() => alert("not supported"));
+      .catch((response) => alert(response));
   } else {
     window.addEventListener("deviceorientationabsolute", handler, true);
   }
