@@ -100,13 +100,13 @@ a​:hover {
     height: 20vh;
     line-height: 20vh; 
     vertical-align: middle;
-    width: 90%;
+    width: 98%;
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.1);
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.1);
     -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.1);
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: 1%;
+    margin-bottom: 1vh;
     border-radius: 6px;
     display: flex;
     flex-direction: row;

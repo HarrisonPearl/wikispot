@@ -48,7 +48,7 @@ function generateCards(userPos){
     list: "geosearch",
     gscoord: userPos.coords.latitude.toString() + "|" + userPos.coords.longitude.toString(),
     gsradius: "800",
-    gslimit: "20",
+    gslimit: "100",
     format: "json"
   };
 
