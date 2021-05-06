@@ -12,7 +12,8 @@ function init() {
   );
   // check if Geolocation available 
   if (window.navigator.geolocation) {
-    startBtn.addEventListener("click", buildCardList);          
+    generateCards();
+    startBtn.addEventListener("click", startCompasses);          
   }
   else {
     alert("please enable geolocation services")
@@ -66,7 +67,6 @@ function generateCards(userPos){
         document.getElementById("card-list").appendChild(element);
       }
       compassCircles = document.querySelectorAll(".compass-circle");
-      startCompasses();
       console.log("num of wikis");
       console.log(nearbyWikis.length);
     })
