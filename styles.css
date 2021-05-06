@@ -1,5 +1,20 @@
 html {background-color: rgb(246, 246, 246)}
 
+h1 {
+  
+  font-family: "Hoefler Text", "Baskerville Old Face", Garamond, "Times New Roman", serif;
+  font-size: 34px;
+  letter-spacing: 3px;
+  word-spacing: 0.2px;
+  color: #2C2C2C;
+  font-weight: 700;
+  text-decoration: none;
+  font-style: normal;
+  font-variant: normal;
+  text-transform: uppercase;
+  text-align: center;
+}
+
 a {
   text-decoration: none;
 }

@@ -118,10 +118,7 @@ function coordDistance(lat1, lon1, lat2, lon2, unit) {
 
 function handler(e) {
   compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
-  console.log("compass");
-  console.log(e.webkitCompassHeading);
-  console.log(Math.abs(e.alpha - 360));
-  document.getElementById("num").innerHTML = compass.toString(); 
+  console.log("compass"); 
   if (compassCircles != undefined){
     for (i = 0; i < compassCircles.length; i++){
       compassCircles[i].style.transform = `translate(-50%, -50%) rotate(${-compass}deg)`;
