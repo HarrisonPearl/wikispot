@@ -46,8 +46,8 @@ html {background-color: rgb(246, 246, 246)}
   }
 
   .wikicard {
-    height: 50%;
-    line-height: 60px; 
+    height: 20vh;
+    line-height: 20vh; 
     vertical-align: middle;
     width: 90%;
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.1);
@@ -64,14 +64,17 @@ html {background-color: rgb(246, 246, 246)}
     background-color: white;
 
     font-family: "Hoefler Text", "Baskerville Old Face", Garamond, "Times New Roman", serif; 
-    font-size: 24px; 
+    font-size: 5vh; 
     font-style: normal; 
     font-variant: normal; 
-    font-weight: 700; 
+    font-weight: 900; 
   }
 
+  a {
+    text-decoration: none;
+  }
   a:link { 
-    color: black; 
+    color: #0645ad; 
   }
 
   a​:active { 
@@ -83,5 +86,5 @@ html {background-color: rgb(246, 246, 246)}
   }
 
   a​:hover { 
-    color: grey;
+    color: rgb(0, 0, 99);
   }
