@@ -84,7 +84,7 @@ a​:hover {
     transform: translateX(-50%);
     border-style: solid;
     border-width: 2vh 1.5vh 0 1.5vh;
-    border-color: silver transparent transparent transparent;
+    border-color: royalblue transparent transparent transparent;
     z-index: 1;
   }
   

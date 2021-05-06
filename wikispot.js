@@ -75,9 +75,9 @@ function generateCards(userPos){
         element.setAttribute("class", "wikicard")
         element.innerHTML = 
           "<a href=" + makeWikiLink(nearbyWikis[i].title) + ">" + nearbyWikis[i].title + "</a>" +
-          "<div class='compass' dist=" + distanceFromUser.toString() + " ang=" + angleFromUser.toString() + ">" +
+          "<div class='compass'>" +
             "<div class='arrow'></div>" +
-            "<div class='compass-circle'></div>" +
+            "<div class='compass-circle' dist=" + distanceFromUser.toString() + " ang=" + angleFromUser.toString() + "></div>" +
             "<div class='my-point'></div>" +
           "</div>";
         document.getElementById("card-list").appendChild(element);
@@ -123,7 +123,7 @@ function handler(e) {
   if (compassCircles != undefined){
     for (i = 0; i < compassCircles.length; i++){
       angleOffset = compassCircles[i].getAttribute("ang");
-      compassCircles[i].style.transform = `translate(-50%, -50%) rotate(${angleOffset}deg)`;
+      compassCircles[i].style.transform = `translate(-50%, -50%) rotate(${-compass + angleOffset}deg)`;
     }
   }
 }
