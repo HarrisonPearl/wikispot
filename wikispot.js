@@ -76,6 +76,7 @@ function generateCards(userPos){
         element.innerHTML = 
           "<a href=" + makeWikiLink(nearbyWikis[i].title) + ">" + nearbyWikis[i].title + "</a>" +
           "<div class='compass'>" +
+            "<div class='distance'>" + distanceFromUser.toFixed(2).toString() + " mi</div>" +
             "<div class='arrow'></div>" +
             "<div class='compass-circle' dist=" + distanceFromUser.toString() + " ang=" + angleFromUser.toString() + "></div>" +
             "<div class='my-point'></div>" +

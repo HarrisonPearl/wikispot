@@ -74,6 +74,24 @@ a​:hover {
     margin-top: auto;
     margin-bottom: auto;
   }
+
+  .compass > .distance {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    height: 10px;
+    line-height: 10px; 
+    vertical-align: middle;
+    text-align: center;
+    font-family: "Hoefler Text", "Baskerville Old Face", Garamond, "Times New Roman", serif; 
+    font-size: 12px; 
+    font-style: normal; 
+    font-variant: normal; 
+    font-weight: 1000; 
+  }
   
   .compass > .arrow {
     position: absolute;
