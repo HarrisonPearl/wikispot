@@ -38,7 +38,7 @@ a​:hover {
 
 .button {
   width: 75vw;
-  height: 15vh;
+  height: 12vh;
   background-color: #4CAF50; /* Green */
   border: none;
   color: white;
@@ -46,7 +46,6 @@ a​:hover {
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: xx-large;
   transition-duration: 0.4s;
   cursor: pointer;
   border-radius: 2px;
@@ -55,11 +54,12 @@ a​:hover {
 .start-btn {
   position: absolute;
   left: 50%;
-  top: 500%;
+  top: 600%;
   transform: translate(-50%, -50%);
   background-color: white; 
   color: grey; 
   border: 2px solid grey;
+  font-size: 20%;
 }
 
 .start-btn:hover {
