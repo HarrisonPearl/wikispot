@@ -2,22 +2,22 @@ html {background-color: rgb(246, 246, 246)}
 
 .compass {
     position: relative;
-    width: 100px;
-    height: 100px;
+    width: 20vw;
+    height: 20vw;
     border-radius: 50%;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    margin-right: 10%;
+    margin-right: 2vw;
   }
   
   .compass > .arrow {
     position: absolute;
     width: 0;
     height: 0;
-    top: -10px;
+    top: -8px;
     left: 50%;
     transform: translateX(-50%);
     border-style: solid;
-    border-width: 15px 10px 0 10px;
+    border-width: 12px 8px 0 8px;
     border-color: orangered transparent transparent transparent;
     z-index: 1;
   }
@@ -64,7 +64,7 @@ html {background-color: rgb(246, 246, 246)}
     background-color: white;
 
     font-family: "Hoefler Text", "Baskerville Old Face", Garamond, "Times New Roman", serif; 
-    font-size: 5vh; 
+    font-size: 3vw; 
     font-style: normal; 
     font-variant: normal; 
     font-weight: 900; 
