@@ -69,12 +69,13 @@ function generateCards(userPos){
       }
       for (i = 0; i < nearbyWikis.length; i++){
         console.log(nearbyWikis[i]);
-        var distanceFromUser = coordDistance(nearbyWikis[i].lat, nearbyWikis[i].lon, userPos.coords.latitude, userPos.coords.longitude, "M");
-        var element = document.createElement('div');
+        let distanceFromUser = coordDistance(nearbyWikis[i].lat, nearbyWikis[i].lon, userPos.coords.latitude, userPos.coords.longitude, "M");
+        let angleFromUser = calcDegreeToPoint(userPos.coords.latitude, userPos.coords.longitude, nearbyWikis[i].lat, nearbyWikis[i].lon,)
+        let element = document.createElement('div');
         element.setAttribute("class", "wikicard")
         element.innerHTML = 
-          "<a href=" + makeWikiLink(nearbyWikis[i].title) + ">" + nearbyWikis[i].title + " " + distanceFromUser.toFixed(2).toString() + " mi" + "</a>" +
-          "<div class='compass'>" +
+          "<a href=" + makeWikiLink(nearbyWikis[i].title) + ">" + nearbyWikis[i].title + "</a>" +
+          "<div class='compass' dist=" + distanceFromUser.toString() + " ang=" + angleFromUser.toString() + ">" +
             "<div class='arrow'></div>" +
             "<div class='compass-circle'></div>" +
             "<div class='my-point'></div>" +
@@ -121,9 +122,25 @@ function handler(e) {
   console.log("compass"); 
   if (compassCircles != undefined){
     for (i = 0; i < compassCircles.length; i++){
-      compassCircles[i].style.transform = `translate(-50%, -50%) rotate(${-compass}deg)`;
+      angleOffset = compassCircles[i].getAttribute("ang");
+      compassCircles[i].style.transform = `translate(-50%, -50%) rotate(${-compass - angleOffset}deg)`;
     }
   }
+}
+
+function calcDegreeToPoint(lat1, lon1, lat2, lon2) {
+  const phiK = (lat2 * Math.PI) / 180.0;
+  const lambdaK = (lon2 * Math.PI) / 180.0;
+  const phi = (lat1 * Math.PI) / 180.0;
+  const lambda = (lon1 * Math.PI) / 180.0;
+  const psi =
+    (180.0 / Math.PI) *
+    Math.atan2(
+      Math.sin(lambdaK - lambda),
+      Math.cos(phi) * Math.tan(phiK) -
+        Math.sin(phi) * Math.cos(lambdaK - lambda)
+    );
+  return Math.round(psi);
 }
 
 window.onload = init;
