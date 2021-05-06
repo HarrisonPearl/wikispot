@@ -123,7 +123,7 @@ function handler(e) {
   if (compassCircles != undefined){
     for (i = 0; i < compassCircles.length; i++){
       angleOffset = compassCircles[i].getAttribute("ang");
-      compassCircles[i].style.transform = `translate(-50%, -50%) rotate(${-compass - angleOffset}deg)`;
+      compassCircles[i].style.transform = `translate(-50%, -50%) rotate(${-compass + angleOffset}deg)`;
     }
   }
 }
