@@ -152,3 +152,7 @@ a​:hover {
   font-variant: normal; 
   font-weight: 900; 
 }
+
+.cardText {
+  margin-left: 5vw;
+}
