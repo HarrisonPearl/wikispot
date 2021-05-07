@@ -3,7 +3,7 @@ html {background-color: rgb(246, 246, 246)}
 h1 {
   
   font-family: "Hoefler Text", "Baskerville Old Face", Garamond, "Times New Roman", serif;
-  font-size: 48px;
+  font-size: 68px;
   letter-spacing: 4px;
   word-spacing: 0.2px;
   color: #2C2C2C;
@@ -13,8 +13,8 @@ h1 {
   font-variant: normal;
   text-transform: uppercase;
   text-align: center;
-  margin-bottom: 10vw;
-  margin-top: 10vw;
+  margin-bottom: 30vw;
+  margin-top: 30vw;
 }
 
 a {
