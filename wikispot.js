@@ -11,7 +11,7 @@ function init() {
     navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
     navigator.userAgent.match(/AppleWebKit/)
   );
-  loginBtn.addEventListener("click", openAuthWindow);
+  //loginBtn.addEventListener("click", openAuthWindow);
   // check if Geolocation available 
   if (window.navigator.geolocation) {
     startBtn.addEventListener("click", buildCardList);          
