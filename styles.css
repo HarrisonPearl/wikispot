@@ -91,11 +91,12 @@ a​:hover {
   position: absolute;
   left: 50%;
   top: 75%;
+  width: 80vw;
   transform: translate(-50%, -50%);
   background-color: white; 
   color: grey; 
   border: 2px solid grey;
-  font-size: 200%;
+  font-size: 600%;
   margin: auto;
 }
 
