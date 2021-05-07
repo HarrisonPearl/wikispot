@@ -36,18 +36,55 @@ a​:hover {
   color: rgb(0, 0, 99);
 }
 
+.auth-window {
+  z-index: 2;
+  position: absolute;
+  top: 5vh;
+  left: 5vw;
+  width: 90vw;
+  height: 90vh;
+  background-color: royalblue;
+}
+
+.auth-window > .close-window {
+  position: absolute;
+  z-index: 3;
+  top: 1vh;
+  right: 1vh;
+}
+
+.auth-window > .inputForm {
+  z-index: 4;
+  position: absolute;
+  z-index: 3;
+  top: 50vh;
+  left: 2vw;
+}
+
 .button {
-  width: 75vw;
-  background-color: #4CAF50; /* Green */
   border: none;
   color: white;
-  padding: 16px 32px;
+  padding: 8px 16px;
   text-align: center;
   text-decoration: none;
-  display: inline-block;
   transition-duration: 0.4s;
   cursor: pointer;
   border-radius: 2px;
+}
+
+.login-btn {
+  position: absolute;
+  width: 8vw;
+  right: 2vw;
+  top: 3vh;
+  background-color: white; 
+  color: grey; 
+  border: 2px solid grey;
+}
+
+.login-btn:hover {
+  background-color: grey;
+  color: white;
 }
 
 .start-btn {

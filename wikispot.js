@@ -6,10 +6,12 @@ let isIOS;
 function init() {
   startBtn = document.querySelector(".start-btn");
   myPoint = document.querySelector(".my-point");
+  loginBtn = document.querySelector(".login-btn");
   isIOS = (
     navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
     navigator.userAgent.match(/AppleWebKit/)
   );
+  loginBtn.addEventListener("click", openAuthWindow);
   // check if Geolocation available 
   if (window.navigator.geolocation) {
     startBtn.addEventListener("click", buildCardList);          
@@ -17,6 +19,70 @@ function init() {
   else {
     alert("please enable geolocation services")
   }
+}
+
+function openAuthWindow() {
+  let authWindow = document.createElement('div');
+  authWindow.setAttribute("class", "auth-window");
+  authWindow.setAttribute("id", "auth-win");
+  authWindow.innerHTML = "";
+  document.getElementById("body").appendChild(authWindow);
+
+  let closeWindow = document.createElement('div');
+  closeWindow.setAttribute("class", "button close-window");
+  closeWindow.innerHTML = "X";
+  closeWindow.addEventListener("click", closeAuthWindow);
+  document.getElementById("auth-win").appendChild(closeWindow);
+
+  let form = document.createElement('form');
+  form.setAttribute("class", "inputForm");
+  form.setAttribute("id", "inputForm");
+  form.setAttribute("action", "/actionpage.php");
+  form.innerHTML = "";
+  document.getElementById("auth-win").appendChild(form);
+
+  let unameLabel = document.createElement('label');
+  unameLabel.setAttribute("for", "uname");
+  unameLabel.innerHTML = "Username: ";
+  document.getElementById("inputForm").appendChild(unameLabel);
+
+  let unameInput = document.createElement('input');
+  unameInput.setAttribute("type", "text");
+  unameInput.setAttribute("id", "uname");
+  unameInput.setAttribute("name", "uname");
+  document.getElementById("inputForm").appendChild(unameInput);
+
+  for (i = 0; i < 2; i++){
+    let lineBreak = document.createElement('br');
+    document.getElementById("inputForm").appendChild(lineBreak);
+  }
+
+  let passLabel = document.createElement('label');
+  passLabel.setAttribute("for", "uname");
+  passLabel.innerHTML = "Password:             ";
+  document.getElementById("inputForm").appendChild(passLabel);
+
+  let upassInput = document.createElement('input');
+  upassInput.setAttribute("type", "text");
+  upassInput.setAttribute("id", "upass");
+  upassInput.setAttribute("name", "upass");
+  document.getElementById("inputForm").appendChild(upassInput);
+
+
+/*
+
+  <form action="/action_page.php">
+  <label for="fname">First name:</label>
+  <input type="text" id="fname" name="fname">
+    <br><br>
+  <label for="lname">Last name:</label>
+  <input type="text" id="lname" name="lname"><br><br>
+  <input type="submit" value="Submit">
+</form>*/
+}
+
+function closeAuthWindow(){
+  document.getElementById("auth-win").remove();
 }
 
 function buildCardList(){
