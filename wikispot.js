@@ -60,15 +60,16 @@ function generateCards(userPos){
   fetch(url)
     .then(function(response){return response.json();})
     .then(function(response) {
-      var pages = response.query.geosearch;
-      for (var place in pages) {
-        console.log(pages[place].title);
-        console.log(pages[place].lat);
-        console.log(pages[place].lon);
+      let pages = response.query.geosearch;
+      console.log(pages[0]);
+      for (let place in pages) {
+        //console.log(pages[place].title);
+        //console.log(pages[place]);
+        //console.log(pages[place].lat);
+        //console.log(pages[place].lon);
         nearbyWikis.push(pages[place]);
       }
       for (i = 0; i < nearbyWikis.length; i++){
-        console.log(nearbyWikis[i]);
         let distanceFromUser = coordDistance(nearbyWikis[i].lat, nearbyWikis[i].lon, userPos.coords.latitude, userPos.coords.longitude, "M");
         let angleFromUser = calcDegreeToPoint(userPos.coords.latitude, userPos.coords.longitude, nearbyWikis[i].lat, nearbyWikis[i].lon,)
         let element = document.createElement('div');
@@ -78,7 +79,7 @@ function generateCards(userPos){
           "<a class='compass' href='https://www.google.com/maps/search/?api=1&query=" + nearbyWikis[i].lat.toString() + "," + nearbyWikis[i].lon.toString() + "'>" +
             "<div class='distance'>" + distanceFromUser.toFixed(2).toString() + " mi</div>" +
             "<div class='arrow'></div>" +
-            "<div class='compass-circle' dist=" + distanceFromUser.toString() + " ang=" + angleFromUser.toString() + "></div>" +
+            (distanceFromUser > 0.2 ? "<div class='compass-circle' dist=" + distanceFromUser.toString() + " ang=" + angleFromUser.toString() + "></div>" : "") +
             "<div class='my-point'></div>" +
           "</div>";
         document.getElementById("card-list").appendChild(element);
@@ -92,7 +93,6 @@ function generateCards(userPos){
 
 function makeWikiLink(title) {
   let link = "https://en.wikipedia.org/wiki/" + title.replaceAll(" ", "_");
-  console.log(link);
   return link;
 }
 
