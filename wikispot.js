@@ -109,12 +109,13 @@ function buildCardList(){
 function generateCards(userPos){
   var url = "https://en.wikipedia.org/w/api.php"; 
 
+  // set gslimit
   var params = {
     action: "query",
     list: "geosearch",
     gscoord: userPos.coords.latitude.toString() + "|" + userPos.coords.longitude.toString(),
-    gsradius: "1600",
-    gslimit: "500",
+    gsradius: "10000",
+    gslimit: "300",
     format: "json"
   };
 
