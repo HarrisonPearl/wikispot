@@ -11,13 +11,13 @@ function init() {
     navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
     navigator.userAgent.match(/AppleWebKit/)
   );
-  //loginBtn.addEventListener("click", openAuthWindow);
+  loginBtn.addEventListener("click", openAuthWindow);
   // check if Geolocation available 
   if (window.navigator.geolocation) {
     startBtn.addEventListener("click", buildCardList);          
   }
   else {
-    alert("please enable geolocation services")
+    alert("Please enable geolocation services")
   }
 }
 
@@ -34,6 +34,7 @@ function openAuthWindow() {
   closeWindow.addEventListener("click", closeAuthWindow);
   document.getElementById("auth-win").appendChild(closeWindow);
 
+  /*
   let form = document.createElement('form');
   form.setAttribute("class", "inputForm");
   form.setAttribute("id", "inputForm");
@@ -67,6 +68,13 @@ function openAuthWindow() {
   upassInput.setAttribute("id", "upass");
   upassInput.setAttribute("name", "upass");
   document.getElementById("inputForm").appendChild(upassInput);
+  */
+  
+  let googleLogin = document.createElement('button');
+  googleLogin.setAttribute("class", "google-auth");
+  googleLogin.setAttribute("id", "gauth");
+  googleLogin.setAttribute("onclick", "signInWithRedirect()")
+  document.getElementById("auth-win").appendChild(googleLogin);
 
 
 /*
@@ -79,6 +87,35 @@ function openAuthWindow() {
   <input type="text" id="lname" name="lname"><br><br>
   <input type="submit" value="Submit">
 </form>*/
+}
+
+function signInWithRedirect(){
+  let provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithRedirect(provider);
+  firebase.auth()
+  .getRedirectResult()
+  .then((result) => {
+    if (result.credential) {
+      /** @type {firebase.auth.OAuthCredential} */
+      var credential = result.credential;
+
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      var token = credential.accessToken;
+      // ...
+    }
+    // The signed-in user info.
+    var user = result.user;
+    console.log(user);
+  }).catch((error) => {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    // The email of the user's account used.
+    var email = error.email;
+    // The firebase.auth.AuthCredential type that was used.
+    var credential = error.credential;
+    // ...
+  });
 }
 
 function closeAuthWindow(){

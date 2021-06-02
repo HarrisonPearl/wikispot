@@ -72,6 +72,18 @@ a​:hover {
   border-radius: 2px;
 }
 
+.google-auth {
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  border: 2px solid #AD235E;
+  background-size: contain;
+  width: 20%;
+  height: 10%;
+  background:url(./btn_google_signin_light_normal_web.png) no-repeat;
+}
+
+
 .login-btn {
   position: absolute;
   width: 8vw;
