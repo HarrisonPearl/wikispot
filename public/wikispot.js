@@ -25,12 +25,11 @@ function openAuthWindow() {
   let authWindow = document.createElement('div');
   authWindow.setAttribute("class", "auth-window");
   authWindow.setAttribute("id", "auth-win");
-  authWindow.innerHTML = "";
   document.getElementById("body").appendChild(authWindow);
 
   let closeWindow = document.createElement('div');
   closeWindow.setAttribute("class", "button close-window");
-  closeWindow.innerHTML = "X";
+  //closeWindow.innerHTML = "X";
   closeWindow.addEventListener("click", closeAuthWindow);
   document.getElementById("auth-win").appendChild(closeWindow);
 
@@ -95,6 +94,7 @@ function signInWithRedirect(){
   firebase.auth()
   .getRedirectResult()
   .then((result) => {
+    console.log(result);
     if (result.credential) {
       /** @type {firebase.auth.OAuthCredential} */
       var credential = result.credential;
@@ -105,7 +105,6 @@ function signInWithRedirect(){
     }
     // The signed-in user info.
     var user = result.user;
-    console.log(user);
   }).catch((error) => {
     // Handle Errors here.
     var errorCode = error.code;
@@ -178,14 +177,14 @@ function generateCards(userPos){
         let angleFromUser = calcDegreeToPoint(userPos.coords.latitude, userPos.coords.longitude, nearbyWikis[i].lat, nearbyWikis[i].lon,)
         let element = document.createElement('div');
         element.setAttribute("class", "wikicard")
-        element.innerHTML = 
+        /*element.innerHTML = 
           "<a class='cardText' href=" + makeWikiLink(nearbyWikis[i].title) + ">" + nearbyWikis[i].title + "</a>" +
           "<a class='compass' href='https://www.google.com/maps/search/?api=1&query=" + nearbyWikis[i].lat.toString() + "," + nearbyWikis[i].lon.toString() + "'>" +
             "<div class='distance'>" + distanceFromUser.toFixed(2).toString() + " mi</div>" +
             "<div class='arrow'></div>" +
             (distanceFromUser > 0.2 ? "<div class='compass-circle' dist=" + distanceFromUser.toString() + " ang=" + angleFromUser.toString() + "></div>" : "") +
             "<div class='my-point'></div>" +
-          "</div>";
+          "</div>";*/
         document.getElementById("card-list").appendChild(element);
       }
       compassCircles = document.querySelectorAll(".compass-circle");
