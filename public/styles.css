@@ -41,8 +41,9 @@ a​:hover {
   position: absolute;
   top: 5vh;
   left: 5vw;
-  width: 90vw;
-  height: 90vh;
+  width: 85vw;
+  height: 80vh;
+  border-radius: 10px;
   background-color: royalblue;
 }
 
@@ -67,7 +68,6 @@ a​:hover {
   padding: 8px 16px;
   text-align: center;
   text-decoration: none;
-  transition-duration: 0.4s;
   cursor: pointer;
   border-radius: 2px;
 }
@@ -78,37 +78,34 @@ a​:hover {
   left: 10%;
   border: 2px solid #AD235E;
   background-size: contain;
-  width: 20%;
-  height: 10%;
   background:url(./btn_google_signin_light_normal_web.png) no-repeat;
 }
 
 
 .login-btn {
   position: absolute;
-  width: 8vw;
   right: 2vw;
   top: 3vh;
-  background-color: white; 
   color: grey; 
-  border: 2px solid grey;
+  font-size: x-large;
 }
 
 .login-btn:hover {
-  background-color: grey;
   color: white;
 }
 
 .start-btn {
   position: absolute;
-  left: 50%;
-  top: 75%;
+  left: 50vw;
+  top: 60vh;
   width: 80vw;
   transform: translate(-50%, -50%);
   background-color: white; 
   color: grey; 
   border: 2px solid grey;
-  font-size: 600%;
+  border-radius: 10px;
+  font-size: 8vw;
+  letter-spacing: 1vw;
   margin: auto;
 }
 
@@ -205,4 +202,17 @@ a​:hover {
 .cardText {
   margin-left: 5vw;
   width: 55vw;
+}
+
+.my-spots-btn {
+  position: absolute;
+  min-width: 8vw;
+  right: 2vw;
+  top: 3vh;
+  color: grey; 
+  font-size: x-large;
+}
+
+.my-spots-btn:hover {
+  color: white;
 }
