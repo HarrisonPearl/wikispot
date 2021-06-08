@@ -291,7 +291,8 @@ function createCard(title, lat, lon, userPos){
         "<div class='compass-circle' dist=" + distanceFromUser.toString() + " ang=" + angleFromUser.toString() + "></div>" : "") +
       "<div class='my-point'></div>" +
     "</a>" +
-   `<div class='button save-btn' onclick='saveWiki("${title}", ${lat}, ${lon})'>save</div>`;
+    (distanceFromUser < 0.2 ?
+      `<div class='button save-btn' onclick='saveWiki("${title}", ${lat}, ${lon})'>save</div>` : "");
   document.getElementById("card-list").appendChild(element);
 }
 

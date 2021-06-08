@@ -74,6 +74,8 @@ a​:hover {
 
 .google-auth {
   position: absolute;
+  min-width: 50%;
+  min-height: 50%;
   top: 50%;
   left: 10%;
   border: 2px solid #AD235E;
@@ -193,8 +195,8 @@ a​:hover {
 
 .save-btn {
   position: absolute;
-  top: 70%;
-  left: 50%;
+  top: 75%;
+  left: 20%;
   transform: translateX(-50%);
   z-index: 4;
   color: grey;
