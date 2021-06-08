@@ -191,7 +191,22 @@ a​:hover {
   transition: opacity 0.5s ease-out;
 }
 
+.save-btn {
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  color: grey;
+  font-size: x-large;
+}
+
+.save-btn :hover{
+  opacity: 50%;
+}
+
 .wikicard {
+  position: relative;
   width: 98%;
   margin-left: auto;
   margin-right: auto;

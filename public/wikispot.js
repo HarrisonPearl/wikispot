@@ -4,6 +4,7 @@ let isIOS;
 let isMobile = null;
 let usersWikis = [];
 let showUserWikis = false;
+let dbRefUserSpots;
 
 /////////////
 // Check for signed in user, load their wikis in userWikis if a user exists
@@ -48,12 +49,12 @@ firebase.auth().onAuthStateChanged(function(user) {
     mySpotButton.innerHTML = "hi, " + user.displayName.substr(0,user.displayName.indexOf(' '));;
     document.getElementById("body").appendChild(mySpotButton);
 
-    const dbRefUserSpots = firebase.database().ref()
+    dbRefUserSpots = firebase.database().ref()
       .child('users')
       .child(user.uid)
       .child('wikispots')
     
-      dbRefUserSpots.on('value', snap => handleSnap(snap));
+    dbRefUserSpots.on('value', snap => handleSnap(snap));
 
   }
   else {
@@ -62,10 +63,17 @@ firebase.auth().onAuthStateChanged(function(user) {
 });
 
 function handleSnap(snap) {
-  for (i = 0; i < Object.keys(snap.val()).length; i++){
+  usersWikis = [];
+  /*for (i = 0; i < Object.keys(snap.val()).length; i++){
     console.log(snap.val()[i]);
     usersWikis.push(snap.val()[i]);
+    numUserWikis += 1;
+  }*/
+  for (const key in snap.val()){
+    console.log(snap.val()[key]);
+    usersWikis.push(snap.val()[key]);
   }
+  console.log(usersWikis);
   
 }
 
@@ -279,11 +287,23 @@ function createCard(title, lat, lon, userPos){
     "<a class='compass' href='https://www.google.com/maps/search/?api=1&query=" + lat.toString() + "," + lon.toString() + "'>" +
       "<div class='distance'>" + distanceFromUser.toFixed(2).toString() + " mi</div>" +
       "<div class='arrow'></div>" +
-      (distanceFromUser > 0.2 ? "<div class='compass-circle' dist=" + distanceFromUser.toString() + " ang=" + angleFromUser.toString() + "></div>" : "") +
+      (distanceFromUser > 0.2 ?
+        "<div class='compass-circle' dist=" + distanceFromUser.toString() + " ang=" + angleFromUser.toString() + "></div>" : "") +
       "<div class='my-point'></div>" +
-    "</div>";
+    "</a>" +
+   `<div class='button save-btn' onclick='saveWiki("${title}", ${lat}, ${lon})'>save</div>`;
   document.getElementById("card-list").appendChild(element);
 }
+
+function saveWiki(atitle, alat, alon){
+  console.log("save");
+  let newSpot = {};
+  newSpot['title'] = atitle;
+  newSpot['lat'] = alat;
+  newSpot['lon'] = alon;
+  dbRefUserSpots.push(newSpot);
+}
+
 function makeWikiLink(title) {
   let link = "https://en.wikipedia.org/wiki/" + title.replaceAll(" ", "_");
   return link;
