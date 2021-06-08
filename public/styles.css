@@ -94,6 +94,18 @@ a​:hover {
   color: white;
 }
 
+.user-wikis-btn {
+  position: absolute;
+  right: 2vw;
+  top: 12vh;
+  color: grey; 
+  font-size: x-large;
+}
+
+.user-wikis-btn:hover {
+  color: white;
+}
+
 .start-btn {
   position: absolute;
   left: 50vw;
