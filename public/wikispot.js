@@ -6,6 +6,7 @@ let usersWikis = [];
 let usersWikisTitles = {};
 let showUserWikis = false;
 let dbRefUserSpots;
+let currUser = null;
 
 /////////////
 // Check for signed in user, load their wikis in userWikis if a user exists
@@ -41,6 +42,7 @@ firebase.auth()
 
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
+    currUser = user;
     console.log("got one", user);
 
     loginBtn = document.querySelector(".login-btn");
@@ -312,7 +314,7 @@ function createCard(title, lat, lon, userPos){
         "<div class='compass-circle' dist=" + distanceFromUser.toString() + " ang=" + angleFromUser.toString() + "></div>" : "") +
       "<div class='my-point'></div>" +
     "</a>" +
-    ((distanceFromUser < 0.2 && !(title in usersWikisTitles))?
+    (((distanceFromUser < 0.2 && !(title in usersWikisTitles)) && currUser)?
       `<div class="button save-btn" onclick="saveWiki(this, '${title.replaceAll("'", "specialApos").replaceAll('"', "specialQuote")}', ${lat}, ${lon})">save</div>` : "");
   document.getElementById("card-list").appendChild(element);
 }
