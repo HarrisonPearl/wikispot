@@ -41,12 +41,22 @@ firebase.auth()
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     console.log("got one", user);
+
     loginBtn = document.querySelector(".login-btn");
     loginBtn.remove();
+
+    let currUserSign = document.createElement('div');
+    currUserSign.setAttribute("class", "curr-user-sign");
+    currUserSign.innerHTML = "Hi, " + user.displayName.substr(0,user.displayName.indexOf(' '));
+    document.getElementById("body").appendChild(currUserSign);
+
     let mySpotButton = document.createElement('button');
     mySpotButton.setAttribute("class", "button my-spots-btn");
     mySpotButton.setAttribute("id", "mSpotButton");
-    mySpotButton.innerHTML = "hi, " + user.displayName.substr(0,user.displayName.indexOf(' '));;
+    mySpotButton.innerHTML = "My Wikis";
+    // username access:
+    //user.displayName.substr(0,user.displayName.indexOf(' '))
+    mySpotButton.addEventListener("click", switchCardList);
     document.getElementById("body").appendChild(mySpotButton);
 
     dbRefUserSpots = firebase.database().ref()
@@ -107,9 +117,6 @@ function init() {
   loginBtn = document.querySelector(".login-btn");
   loginBtn.addEventListener("click", openAuthWindow);
 
-  userWikisBtn = document.querySelector(".user-wikis-btn");
-  userWikisBtn.addEventListener("click", switchCardList);
-
   isIOS = (
     navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
     navigator.userAgent.match(/AppleWebKit/)
@@ -120,6 +127,15 @@ function init() {
 
 function switchCardList(){
   showUserWikis = !showUserWikis;
+  mySpotsBtn = document.querySelector(".my-spots-btn");
+  if (showUserWikis) {
+    mySpotsBtn.innerHTML = "Nearby Wikis";
+  }
+  else {
+    mySpotsBtn.innerHTML = "My Wikis";
+  }
+  
+  //my-spots-btn
   buildCardList()
 }
 
@@ -292,21 +308,21 @@ function createCard(title, lat, lon, userPos){
       "<div class='my-point'></div>" +
     "</a>" +
     (distanceFromUser < 0.2 ?
-      `<div class='button save-btn' onclick='saveWiki("${title}", ${lat}, ${lon})'>save</div>` : "");
+      `<div class="button save-btn" onclick="saveWiki('${title.replaceAll("'", "specialApos").replaceAll('"', "specialQuote")}', ${lat}, ${lon})">save</div>` : "");
   document.getElementById("card-list").appendChild(element);
 }
 
 function saveWiki(atitle, alat, alon){
   console.log("save");
   let newSpot = {};
-  newSpot['title'] = atitle;
+  newSpot['title'] = atitle.replaceAll("specialApos", "'").replaceAll("specialQuote", '"');
   newSpot['lat'] = alat;
   newSpot['lon'] = alon;
   dbRefUserSpots.push(newSpot);
 }
 
 function makeWikiLink(title) {
-  let link = "https://en.wikipedia.org/wiki/" + title.replaceAll(" ", "_");
+  let link = "https://en.wikipedia.org/wiki/" + title.replaceAll(" ", "_").replaceAll("'", "%27");
   return link;
 }
 

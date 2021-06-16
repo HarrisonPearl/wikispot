@@ -78,7 +78,8 @@ a​:hover {
   min-height: 50%;
   top: 50%;
   left: 10%;
-  border: 2px solid #AD235E;
+  /*border: 2px solid #AD235E;*/
+  border: none;
   background-size: contain;
   background:url(./btn_google_signin_light_normal_web.png) no-repeat;
 }
@@ -88,8 +89,6 @@ a​:hover {
   position: absolute;
   right: 2vw;
   top: 3vh;
-  color: grey; 
-  font-size: x-large;
 }
 
 .login-btn:hover {
@@ -146,7 +145,7 @@ a​:hover {
   left: 50%;
   transform: translate(-50%, -50%);
 
-  height: 10px;
+  /*height: 10px;*/
   line-height: 10px; 
   vertical-align: middle;
   text-align: center;
@@ -191,6 +190,16 @@ a​:hover {
   background: rgb(8, 223, 69);
   border-radius: 50%;
   transition: opacity 0.5s ease-out;
+}
+
+.curr-user-sign {
+  position: absolute;
+  top: 3vh;
+  left: 2vw;
+  color: grey; 
+  font-size: x-large;
+  border: none;
+  background: none;
 }
 
 .save-btn {
