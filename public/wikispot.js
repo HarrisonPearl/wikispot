@@ -3,6 +3,7 @@ let compass;
 let isIOS;
 let isMobile = null;
 let usersWikis = [];
+let usersWikisTitles = {};
 let showUserWikis = false;
 let dbRefUserSpots;
 
@@ -82,8 +83,12 @@ function handleSnap(snap) {
   for (const key in snap.val()){
     console.log(snap.val()[key]);
     usersWikis.push(snap.val()[key]);
+    if (!(snap.val()[key].title in usersWikisTitles)){
+      usersWikisTitles[snap.val()[key].title] = "";
+    }
   }
   console.log(usersWikis);
+  console.log("titles", usersWikisTitles);
   
 }
 
@@ -307,18 +312,19 @@ function createCard(title, lat, lon, userPos){
         "<div class='compass-circle' dist=" + distanceFromUser.toString() + " ang=" + angleFromUser.toString() + "></div>" : "") +
       "<div class='my-point'></div>" +
     "</a>" +
-    (distanceFromUser < 0.2 ?
-      `<div class="button save-btn" onclick="saveWiki('${title.replaceAll("'", "specialApos").replaceAll('"', "specialQuote")}', ${lat}, ${lon})">save</div>` : "");
+    ((distanceFromUser < 0.2 && !(title in usersWikisTitles))?
+      `<div class="button save-btn" onclick="saveWiki(this, '${title.replaceAll("'", "specialApos").replaceAll('"', "specialQuote")}', ${lat}, ${lon})">save</div>` : "");
   document.getElementById("card-list").appendChild(element);
 }
 
-function saveWiki(atitle, alat, alon){
+function saveWiki(element, atitle, alat, alon){
   console.log("save");
   let newSpot = {};
   newSpot['title'] = atitle.replaceAll("specialApos", "'").replaceAll("specialQuote", '"');
   newSpot['lat'] = alat;
   newSpot['lon'] = alon;
   dbRefUserSpots.push(newSpot);
+  element.remove();
 }
 
 function makeWikiLink(title) {
