@@ -53,6 +53,12 @@ firebase.auth().onAuthStateChanged(function(user) {
     currUserSign.innerHTML = "Hi, " + user.displayName.substr(0,user.displayName.indexOf(' '));
     document.getElementById("body").appendChild(currUserSign);
 
+    let logoutButton = document.createElement('button');
+    logoutButton.setAttribute("class", "button logout-btn");
+    logoutButton.addEventListener("click", logoutUser)
+    logoutButton.innerHTML = "Log Out"
+    document.getElementById("body").appendChild(logoutButton);
+
     let mySpotButton = document.createElement('button');
     mySpotButton.setAttribute("class", "button my-spots-btn");
     mySpotButton.setAttribute("id", "mSpotButton");
@@ -214,8 +220,37 @@ function openAuthWindow() {
 </form>*/
 }
 
+function logoutUser(){
+  if (currUser){
+    currUserSign = document.querySelector(".curr-user-sign");
+    currUserSign.remove();
+    if(showUserWikis){
+      switchCardList();
+    }
+    mySpotsBtn = document.querySelector(".my-spots-btn");
+    mySpotsBtn.remove();
+
+    let loginBtn = document.createElement('button');
+    loginBtn.setAttribute("class", "button login-btn");
+    loginBtn.addEventListener("click", openAuthWindow);
+    loginBtn.innerHTML = "Log In / Sign Up"
+    document.getElementById("body").appendChild(loginBtn);
+    currUser = null;
+
+    logoutButton = document.querySelector(".logout-btn");
+    logoutButton.remove();
+
+    firebase.auth().signOut().then(() => {
+      console.log("user signed out")
+    }).catch((error) => {
+      console.log(error)
+    });
+  }
+  
+}
+
 function signInWithRedirect(){
-  let provider = new firebase.auth.GoogleAuthProvider();
+  provider = new firebase.auth.GoogleAuthProvider();
   firebase.auth().signInWithRedirect(provider);
 }
 
