@@ -237,6 +237,7 @@ function logoutUser(){
     document.getElementById("body").appendChild(loginBtn);
     currUser = null;
 
+    saveBtns = document.querySelectorAll(".save-btn").forEach(sb => sb.remove());
     logoutButton = document.querySelector(".logout-btn");
     logoutButton.remove();
 
@@ -418,7 +419,7 @@ function calcDegreeToPoint(lat1, lon1, lat2, lon2) {
 }
 
 function clearCardList(){
-  wikiCards = document.querySelectorAll(".wikicard").forEach(wc => wc.remove());;
+  wikiCards = document.querySelectorAll(".wikicard").forEach(wc => wc.remove());
 }
 
 window.onload = init;
