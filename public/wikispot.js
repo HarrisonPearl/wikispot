@@ -7,6 +7,7 @@ let usersWikisTitles = {};
 let showUserWikis = false;
 let dbRefUserSpots;
 let currUser = null;
+let userPosition = null;
 
 /////////////
 // Check for signed in user, load their wikis in userWikis if a user exists
@@ -161,7 +162,6 @@ function openAuthWindow() {
 
   let closeWindow = document.createElement('div');
   closeWindow.setAttribute("class", "button close-window");
-  closeWindow.innerHTML = "X";
   closeWindow.addEventListener("click", closeAuthWindow);
   document.getElementById("auth-win").appendChild(closeWindow);
 
@@ -290,13 +290,14 @@ function buildCardList(){
 }
 
 function generateCards(userPos){
+  userPosition = userPos;
   var url = "https://en.wikipedia.org/w/api.php"; 
 
   // set gslimits
   var params = {
     action: "query",
     list: "geosearch",
-    gscoord: userPos.coords.latitude.toString() + "|" + userPos.coords.longitude.toString(),
+    gscoord: userPosition.coords.latitude.toString() + "|" + userPosition.coords.longitude.toString(),
     gsradius: "10000",
     gslimit: "300",
     format: "json"
@@ -317,13 +318,25 @@ function generateCards(userPos){
       }
       //cards are generated from nearby wikis or user wikis depending
       if (showUserWikis){
+        usersWikis.sort(
+          function(a,b) {
+            let aDistanceFromUser = coordDistance(a.lat, a.lon, userPosition.coords.latitude, userPosition.coords.longitude, "M");
+            let bDistanceFromUser = coordDistance(b.lat, b.lon, userPosition.coords.latitude, userPosition.coords.longitude, "M");
+            
+            let dir = 'asc';
+            if (dir === 'asc') {
+              return aDistanceFromUser - bDistanceFromUser;
+            };
+          return bDistanceFromUser - aDistanceFromUser;
+          }
+        );
         for (i = 0; i < usersWikis.length; i++){
-          createCard(usersWikis[i].title, usersWikis[i].lat, usersWikis[i].lon, userPos);
+          createCard(usersWikis[i].title, usersWikis[i].lat, usersWikis[i].lon);
         }
       }
       else {
         for (i = 0; i < nearbyWikis.length; i++){
-          createCard(nearbyWikis[i].title, nearbyWikis[i].lat, nearbyWikis[i].lon, userPos);
+          createCard(nearbyWikis[i].title, nearbyWikis[i].lat, nearbyWikis[i].lon);
         }
       }
       
@@ -336,9 +349,9 @@ function generateCards(userPos){
     .catch(function(error){console.log(error);});
 }
 
-function createCard(title, lat, lon, userPos){
-  let distanceFromUser = coordDistance(lat, lon, userPos.coords.latitude, userPos.coords.longitude, "M");
-  let angleFromUser = calcDegreeToPoint(userPos.coords.latitude, userPos.coords.longitude, lat, lon,)
+function createCard(title, lat, lon){
+  let distanceFromUser = coordDistance(lat, lon, userPosition.coords.latitude, userPosition.coords.longitude, "M");
+  let angleFromUser = calcDegreeToPoint(userPosition.coords.latitude, userPosition.coords.longitude, lat, lon,)
   let element = document.createElement('div');
   element.setAttribute("class", "wikicard")
   element.innerHTML = 
