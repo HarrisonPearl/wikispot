@@ -1,5 +1,5 @@
 html {
-  background-color: rgb(246, 246, 246);
+  background-color: #E5E5E5;
   height: 100%;}
 body{
   height: 100%;
@@ -50,6 +50,7 @@ a​:hover {
   width: 100vw;
   /*border-radius: 10px;*/
   backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
 
 }
 
@@ -99,10 +100,12 @@ a​:hover {
 
 .login-btn {
   position: absolute;
-  right: 2vw;
+  left: 4vw;
   top: 3vh;
-  color: rgb(160, 160, 160); 
+  color: rgb(160, 160, 160);
   font-size: x-large;
+  background-color: transparent;
+  padding: 0;
 }
 
 .login-btn:hover {
@@ -111,10 +114,12 @@ a​:hover {
 
 
 .logout-btn {
+  background-color: transparent;
   position: absolute;
   top: 6vh;
-  left: 2vw;
-  color: rgb(160, 160, 160); 
+  left: 4vw;
+  padding: 0;
+  color: rgb(160, 160, 160);
   font-size: x-large;
 }
 
@@ -123,6 +128,7 @@ a​:hover {
 }
 
 .user-wikis-btn {
+  background-color: transparent;
   position: absolute;
   right: 2vw;
   top: 12vh;
@@ -140,13 +146,12 @@ a​:hover {
   top: 60vh;
   width: 80vw;
   transform: translate(-50%, -50%);
-  background-color: white; 
-  color: rgb(160, 160, 160); 
-  border: 2px solid grey;
-  border-radius: 10px;
+  background-color: #324182;
+  color: white;
   font-size: 8vw;
   letter-spacing: 1vw;
   margin: auto;
+  border-radius: 9px;
 }
 
 .start-btn:hover {
@@ -238,7 +243,7 @@ a​:hover {
   left: 50%;
   transform: translateX(-50%);
   z-index: 4;
-  color: grey;
+  color: rgb(160, 160, 160);
   font-size: x-large;
 }
 
@@ -273,10 +278,13 @@ a​:hover {
 }
 
 .my-spots-btn {
+  background-color: transparent;
   position: absolute;
   min-width: 8vw;
-  right: 2vw;
-  top: 3vh;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0;
+  top: 38vh;
   color: rgb(160, 160, 160);
   font-size: x-large;
 }
