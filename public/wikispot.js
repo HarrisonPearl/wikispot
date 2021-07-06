@@ -59,7 +59,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     logoutButton.addEventListener("click", logoutUser)
     logoutButton.innerHTML = "Log Out"
     document.getElementById("body").appendChild(logoutButton);
-
+    /*
     let mySpotButton = document.createElement('button');
     mySpotButton.setAttribute("class", "button my-spots-btn");
     mySpotButton.setAttribute("id", "mSpotButton");
@@ -67,12 +67,14 @@ firebase.auth().onAuthStateChanged(function(user) {
     // username access:
     //user.displayName.substr(0,user.displayName.indexOf(' '))
     mySpotButton.addEventListener("click", switchCardList);
-    document.getElementById("body").appendChild(mySpotButton);
+    document.getElementById("body").appendChild(mySpotButton);*/
 
     dbRefUserSpots = firebase.database().ref()
       .child('users')
       .child(user.uid)
       .child('wikispots')
+    
+    
     
     dbRefUserSpots.on('value', snap => handleSnap(snap));
 
@@ -83,6 +85,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 });
 
 function handleSnap(snap) {
+  console.log("made it to the snap");
   usersWikis = [];
   /*for (i = 0; i < Object.keys(snap.val()).length; i++){
     console.log(snap.val()[i]);
@@ -142,15 +145,25 @@ function init() {
 function switchCardList(){
   showUserWikis = !showUserWikis;
   mySpotsBtn = document.querySelector(".my-spots-btn");
+  let cListCountainer = document.querySelector(".card-list-container");
   if (showUserWikis) {
     mySpotsBtn.innerHTML = "Nearby Wikis";
+    cListCountainer.classList.add("shift-left");
+    window.setTimeout(function () {
+      document.getElementById("card-list").classList.add("hidden");
+    }, 1000);
+    
   }
   else {
     mySpotsBtn.innerHTML = "My Wikis";
+    document.getElementById("card-list").classList.remove("hidden");
+    cListCountainer.classList.remove("shift-left");
   }
+
+  
   
   //my-spots-btn
-  buildCardList()
+  //buildCardList()
 }
 
 // Auth window
@@ -261,7 +274,6 @@ function closeAuthWindow(){
 
 // card list building
 function buildCardList(){
-  clearCardList();
   // get orientation permission
   if (isIOS) {
     DeviceOrientationEvent.requestPermission()
@@ -282,7 +294,18 @@ function buildCardList(){
   if (window.navigator.geolocation) {
     window.navigator.geolocation
       .getCurrentPosition(generateCards, console.log);
-    startBtn.remove();        
+    startBtn.remove();
+    
+    if ((currUser && usersWikis.length != 0) && document.getElementById("mSpotButton") == null){
+      let mySpotButton = document.createElement('button');
+      mySpotButton.setAttribute("class", "button my-spots-btn");
+      mySpotButton.setAttribute("id", "mSpotButton");
+      mySpotButton.innerHTML = "My Wikis";
+      // username access:
+      //user.displayName.substr(0,user.displayName.indexOf(' '))
+      mySpotButton.addEventListener("click", switchCardList);
+      document.getElementById("body").appendChild(mySpotButton);
+    }
   }
   else {
     alert("Please enable geolocation services")
@@ -316,9 +339,56 @@ function generateCards(userPos){
       for (let place in pages) {
         nearbyWikis.push(pages[place]);
       }
+
+      usersWikis.sort(
+        function(a,b) {
+          let aDistanceFromUser = coordDistance(a.lat, a.lon, userPosition.coords.latitude, userPosition.coords.longitude, "M");
+          let bDistanceFromUser = coordDistance(b.lat, b.lon, userPosition.coords.latitude, userPosition.coords.longitude, "M");
+          
+          let dir = 'asc';
+          if (dir === 'asc') {
+            return aDistanceFromUser - bDistanceFromUser;
+          };
+        return bDistanceFromUser - aDistanceFromUser;
+        }
+      );
+
+
+      for (i = 0; i < usersWikis.length; i++){
+        createCard(usersWikis[i].title, usersWikis[i].lat, usersWikis[i].lon, "user");
+      }
+
+      /*window.setTimeout(function () {
+        document.getElementById("card-list").classList.remove("card-list-left");
+      }, 1000);*/
+
+      for (i = 0; i < nearbyWikis.length; i++){
+        createCard(nearbyWikis[i].title, nearbyWikis[i].lat, nearbyWikis[i].lon, "nearby");
+      }
+      //<div class="bottom-text">bottom text</div>
+      let bottomTextElement = document.createElement('div');
+      bottomTextElement.setAttribute("class", "bottom-text");
+      bottomTextElement.innerHTML = "move to find more wikis :)";
+      document.getElementById("card-list").appendChild(bottomTextElement);
+
+      /*window.setTimeout(function () {
+        document.getElementById("card-list").classList.remove("card-list-left");
+      }, 1000);*/
+
+
+
+      
+
+
+
       //cards are generated from nearby wikis or user wikis depending
-      if (showUserWikis){
-        usersWikis.sort(
+      /*if (showUserWikis){
+        let bt = document.querySelector(".bottom-text");
+        bt.remove();
+        if (document.querySelector(".wikicard")){
+          clearCardList();
+        }*/
+        /*usersWikis.sort(
           function(a,b) {
             let aDistanceFromUser = coordDistance(a.lat, a.lon, userPosition.coords.latitude, userPosition.coords.longitude, "M");
             let bDistanceFromUser = coordDistance(b.lat, b.lon, userPosition.coords.latitude, userPosition.coords.longitude, "M");
@@ -333,14 +403,29 @@ function generateCards(userPos){
         for (i = 0; i < usersWikis.length; i++){
           createCard(usersWikis[i].title, usersWikis[i].lat, usersWikis[i].lon);
         }
+
+        window.setTimeout(function () {
+          document.getElementById("card-list").classList.remove("card-list-left");
+        }, 1000);
+        
       }
-      else {
-        for (i = 0; i < nearbyWikis.length; i++){
+      else {*/
+        /*if (document.querySelector(".wikicard")){
+          clearCardList();
+        }*/
+        /*for (i = 0; i < nearbyWikis.length; i++){
           createCard(nearbyWikis[i].title, nearbyWikis[i].lat, nearbyWikis[i].lon);
         }
-      }
-      
+        //<div class="bottom-text">bottom text</div>
+        let bottomTextElement = document.createElement('div');
+        bottomTextElement.setAttribute("class", "bottom-text");
+        bottomTextElement.innerHTML = "move to find more wikis :)"
+        document.getElementById("card-list").appendChild(bottomTextElement);
 
+        window.setTimeout(function () {
+          document.getElementById("card-list").classList.remove("card-list-left");
+        }, 1000);
+      }   */   
 
       compassCircles = document.querySelectorAll(".compass-circle");
       console.log("num of wikis");
@@ -349,7 +434,7 @@ function generateCards(userPos){
     .catch(function(error){console.log(error);});
 }
 
-function createCard(title, lat, lon){
+function createCard(title, lat, lon, listType){
   let distanceFromUser = coordDistance(lat, lon, userPosition.coords.latitude, userPosition.coords.longitude, "M");
   let angleFromUser = calcDegreeToPoint(userPosition.coords.latitude, userPosition.coords.longitude, lat, lon,)
   let element = document.createElement('div');
@@ -365,10 +450,26 @@ function createCard(title, lat, lon){
     "</a>" +
     (((distanceFromUser < 0.2 && !(title in usersWikisTitles)) && currUser)?
       `<div class="button save-btn" onclick="saveWiki(this, '${title.replaceAll("'", "specialApos").replaceAll('"', "specialQuote")}', ${lat}, ${lon})">save</div>` : "");
-  document.getElementById("card-list").appendChild(element);
+  if (listType == "user") {
+    document.getElementById("user-card-list").appendChild(element);
+  }
+  else {
+    document.getElementById("card-list").appendChild(element);
+  }
 }
 
 function saveWiki(element, atitle, alat, alon){
+  if (usersWikis.length == 0){
+    let mySpotButton = document.createElement('button');
+    mySpotButton.setAttribute("class", "button my-spots-btn");
+    mySpotButton.setAttribute("id", "mSpotButton");
+    mySpotButton.innerHTML = "My Wikis";
+    // username access:
+    //user.displayName.substr(0,user.displayName.indexOf(' '))
+    mySpotButton.addEventListener("click", switchCardList);
+    document.getElementById("body").appendChild(mySpotButton);
+  }
+
   console.log("save");
   let newSpot = {};
   newSpot['title'] = atitle.replaceAll("specialApos", "'").replaceAll("specialQuote", '"');
@@ -376,6 +477,8 @@ function saveWiki(element, atitle, alat, alon){
   newSpot['lon'] = alon;
   dbRefUserSpots.push(newSpot);
   element.remove();
+
+  buildCardList();
 }
 
 function makeWikiLink(title) {
@@ -432,6 +535,8 @@ function calcDegreeToPoint(lat1, lon1, lat2, lon2) {
 }
 
 function clearCardList(){
+  let currCardList = document.querySelector(".card-list");
+  currCardList.classList.add("card-list-left");
   wikiCards = document.querySelectorAll(".wikicard").forEach(wc => wc.remove());
 }
 
