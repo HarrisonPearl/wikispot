@@ -150,13 +150,13 @@ function switchCardList(){
     mySpotsBtn.innerHTML = "Nearby Wikis";
     cListCountainer.classList.add("shift-left");
     window.setTimeout(function () {
-      document.getElementById("card-list").classList.add("hidden");
+      document.getElementById("card-list").classList.add("collapsed");
     }, 1000);
     
   }
   else {
     mySpotsBtn.innerHTML = "My Wikis";
-    document.getElementById("card-list").classList.remove("hidden");
+    document.getElementById("card-list").classList.remove("collapsed");
     cListCountainer.classList.remove("shift-left");
   }
 
