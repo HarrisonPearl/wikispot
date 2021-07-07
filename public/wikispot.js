@@ -144,26 +144,33 @@ function init() {
 
 function switchCardList(){
   showUserWikis = !showUserWikis;
-  mySpotsBtn = document.querySelector(".my-spots-btn");
   let cListCountainer = document.querySelector(".card-list-container");
+  let uWikisButton = document.getElementById("uwButton");
+  let nWikisButton = document.getElementById("nwButton");
   if (showUserWikis) {
-    mySpotsBtn.innerHTML = "Nearby Wikis";
+    document.getElementById("user-card-list").classList.remove("collapsed");
     cListCountainer.classList.add("shift-left");
     window.setTimeout(function () {
       document.getElementById("card-list").classList.add("collapsed");
+      uWikisButton.disabled = true;
+      nWikisButton.disabled = false;
     }, 1000);
     
   }
   else {
-    mySpotsBtn.innerHTML = "My Wikis";
     document.getElementById("card-list").classList.remove("collapsed");
     cListCountainer.classList.remove("shift-left");
+    window.setTimeout(function () {
+      document.getElementById("user-card-list").classList.add("collapsed");
+      uWikisButton.disabled = false;
+      nWikisButton.disabled = true;
+    }, 1000);
   }
 
   
   
   //my-spots-btn
-  //buildCardList()
+  //buildCardList()n 
 }
 
 // Auth window
@@ -240,7 +247,7 @@ function logoutUser(){
     if(showUserWikis){
       switchCardList();
     }
-    mySpotsBtn = document.querySelector(".my-spots-btn");
+    mySpotsBtn = document.getElementById("mSpotButton");
     mySpotsBtn.remove();
 
     let loginBtn = document.createElement('button');
@@ -297,18 +304,41 @@ function buildCardList(){
     startBtn.remove();
     
     if ((currUser && usersWikis.length != 0) && document.getElementById("mSpotButton") == null){
-      let mySpotButton = document.createElement('button');
-      mySpotButton.setAttribute("class", "button my-spots-btn");
-      mySpotButton.setAttribute("id", "mSpotButton");
-      mySpotButton.innerHTML = "My Wikis";
-      // username access:
-      //user.displayName.substr(0,user.displayName.indexOf(' '))
-      mySpotButton.addEventListener("click", switchCardList);
-      document.getElementById("body").appendChild(mySpotButton);
+      generateTabButtons();
     }
   }
   else {
     alert("Please enable geolocation services")
+  }
+}
+
+function generateTabButtons(){
+  let mySpotButton = document.createElement('div');
+  mySpotButton.setAttribute("class", "tab-btn-container");
+  mySpotButton.setAttribute("id", "mSpotButton");
+  document.getElementById("body").appendChild(mySpotButton);
+
+  let nWikisButton = document.createElement('button');
+  nWikisButton.setAttribute("class", "button tab-btn");
+  nWikisButton.setAttribute("id", "nwButton");
+  nWikisButton.innerHTML = "Nearby Wikis";
+  nWikisButton.addEventListener("click", switchCardList);
+  document.getElementById("mSpotButton").appendChild(nWikisButton);
+
+  let uWikisButton = document.createElement('button');
+  uWikisButton.setAttribute("class", "button tab-btn");
+  uWikisButton.setAttribute("id", "uwButton");
+  uWikisButton.innerHTML = "User Wikis";
+  uWikisButton.addEventListener("click", switchCardList);
+  document.getElementById("mSpotButton").appendChild(uWikisButton);
+
+  if (showUserWikis) {
+    uWikisButton.disabled = true;
+    nWikisButton.disabled = false;
+  }
+  else {
+    uWikisButton.disabled = false;
+    nWikisButton.disabled = true;
   }
 }
 
@@ -434,6 +464,8 @@ function generateCards(userPos){
     .catch(function(error){console.log(error);});
 }
 
+
+
 function createCard(title, lat, lon, listType){
   let distanceFromUser = coordDistance(lat, lon, userPosition.coords.latitude, userPosition.coords.longitude, "M");
   let angleFromUser = calcDegreeToPoint(userPosition.coords.latitude, userPosition.coords.longitude, lat, lon,)
@@ -449,7 +481,7 @@ function createCard(title, lat, lon, listType){
       "<div class='my-point'></div>" +
     "</a>" +
     (((distanceFromUser < 0.2 && !(title in usersWikisTitles)) && currUser)?
-      `<div class="button save-btn" onclick="saveWiki(this, '${title.replaceAll("'", "specialApos").replaceAll('"', "specialQuote")}', ${lat}, ${lon})">save</div>` : "");
+      `<div class="button save-btn" onclick="saveWiki(this, '${title.replaceAll("'", "specialApos").replaceAll('"', "specialQuote")}', ${lat}, ${lon})">save</div>` : "<div class='delete-container-y'><div class ='button delete-btn' onclick='confirmDelete(this)'>remove</div></div>");
   if (listType == "user") {
     document.getElementById("user-card-list").appendChild(element);
   }
@@ -460,14 +492,7 @@ function createCard(title, lat, lon, listType){
 
 function saveWiki(element, atitle, alat, alon){
   if (usersWikis.length == 0){
-    let mySpotButton = document.createElement('button');
-    mySpotButton.setAttribute("class", "button my-spots-btn");
-    mySpotButton.setAttribute("id", "mSpotButton");
-    mySpotButton.innerHTML = "My Wikis";
-    // username access:
-    //user.displayName.substr(0,user.displayName.indexOf(' '))
-    mySpotButton.addEventListener("click", switchCardList);
-    document.getElementById("body").appendChild(mySpotButton);
+    generateTabButtons();
   }
 
   console.log("save");
@@ -479,6 +504,48 @@ function saveWiki(element, atitle, alat, alon){
   element.remove();
 
   buildCardList();
+}
+
+function confirmDelete(dbtn){
+  dcontainer = dbtn.parentElement;
+  card = dcontainer.parentElement;
+  dbtn.remove();
+
+  msg = document.createElement('div');
+  msg.setAttribute("class", "delete-messege");
+  msg.innerHTML = "delete wikispot permanently?";
+  dcontainer.appendChild(msg);
+
+  xcon = document.createElement('div');
+  xcon.setAttribute("class", "delete-container-x");
+  dcontainer.appendChild(xcon);
+
+  ybtn = document.createElement('div');
+  ybtn.setAttribute("class", "delete-btn-yes");
+  ybtn.setAttribute("onClick", "card.remove()");
+  ybtn.innerHTML = "yes";
+  xcon.appendChild(ybtn);
+
+  nbtn = document.createElement('div');
+  nbtn.setAttribute("class", "delete-btn-no");
+  nbtn.setAttribute("onClick", "cancelDelete(msg, xcon, ybtn, nbtn, dcontainer)");
+  nbtn.innerHTML = "no";
+  xcon.appendChild(nbtn);
+
+}
+
+function cancelDelete(msg, xcon, ybtn, nbtn, dcontainer){
+  msg.remove();
+  ybtn.remove();
+  nbtn.remove();
+  xcon.remove();
+
+  let delbtn = document.createElement('div');
+  delbtn.setAttribute("class", "button delete-btn");
+  delbtn.setAttribute("onClick", "confirmDelete(this)");
+  delbtn.innerHTML = "delete";
+  dcontainer.appendChild(delbtn);
+
 }
 
 function makeWikiLink(title) {

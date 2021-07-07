@@ -124,6 +124,63 @@ a​:hover {
   overflow: hidden;
 }
 
+.delete-btn {
+  color: rgb(160, 160, 160);
+  font-size: x-large;
+}
+
+.delete-btn:hover {
+  opacity: 60%;
+}
+
+.delete-container-x {
+  position: absolute;
+  top: 75%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  width: 50%;
+  justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+}
+
+.delete-container-y {
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  width: 50%;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.delete-btn-yes {
+  color: rgb(167, 101, 101);
+  font-size: x-large;
+}
+
+.delete-btn-yes:hover {
+  opacity: 60%;
+}
+
+.delete-btn-no {
+  color: rgb(160, 160, 160);
+  font-size: x-large;
+}
+
+.delete-btn-no:hover {
+  opacity: 60%;
+}
+
+.delete-messege {
+  color: rgb(160, 160, 160);
+  font-size: large;
+  text-align: center;
+}
+
 .login-btn {
   position: absolute;
   left: 4vw;
@@ -205,6 +262,27 @@ a​:hover {
 }
 .start-btn:hover {
 	opacity: 60%;
+}
+
+.tab-btn {
+  background-color: transparent;
+  color: rgb(160, 160, 160);
+  font-size: x-large;
+  box-shadow: 0 4px 2px -2px gray;
+}
+
+.tab-btn:hover {
+  opacity: 60%;
+}
+
+.tab-btn-container {
+  position: absolute;
+  top: 38vh;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  justify-content: space-between;
+  display: flex;
 }
 
 
@@ -321,6 +399,7 @@ a​:hover {
   font-style: normal; 
   font-variant: normal; 
   font-weight: 900; 
+  transition: 0.2s;
 }
 
 .card-list-container {
@@ -363,7 +442,7 @@ a​:hover {
 }
 
 .my-spots-btn:hover {
-  opacity: 50%;
+  opacity: 60%;
 }
 
 .shift-left {
