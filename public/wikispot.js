@@ -147,12 +147,18 @@ function switchCardList(){
   let cListCountainer = document.querySelector(".card-list-container");
   let uWikisButton = document.getElementById("uwButton");
   let nWikisButton = document.getElementById("nwButton");
+  uWikisButton.disabled = true;
+  nWikisButton.disabled = true;
   if (showUserWikis) {
+    
     document.getElementById("user-card-list").classList.remove("collapsed");
     cListCountainer.classList.add("shift-left");
+
+    uWikisButton.classList.add("tab-active");
+    nWikisButton.classList.remove("tab-active");
+
     window.setTimeout(function () {
       document.getElementById("card-list").classList.add("collapsed");
-      uWikisButton.disabled = true;
       nWikisButton.disabled = false;
     }, 1000);
     
@@ -160,10 +166,13 @@ function switchCardList(){
   else {
     document.getElementById("card-list").classList.remove("collapsed");
     cListCountainer.classList.remove("shift-left");
+
+    nWikisButton.classList.add("tab-active");
+    uWikisButton.classList.remove("tab-active");
+
     window.setTimeout(function () {
       document.getElementById("user-card-list").classList.add("collapsed");
       uWikisButton.disabled = false;
-      nWikisButton.disabled = true;
     }, 1000);
   }
 
@@ -316,12 +325,12 @@ function buildCardList(){
 
 function generateTabButtons(){
   let mySpotButton = document.createElement('div');
-  mySpotButton.setAttribute("class", "tab-btn-container");
+  mySpotButton.setAttribute("class", "tab-btn-container tab-btn-container-hidden");
   mySpotButton.setAttribute("id", "mSpotButton");
   document.getElementById("body").appendChild(mySpotButton);
 
   let nWikisButton = document.createElement('button');
-  nWikisButton.setAttribute("class", "button tab-btn");
+  nWikisButton.setAttribute("class", "button tab-btn tab-active");
   nWikisButton.setAttribute("id", "nwButton");
   nWikisButton.innerHTML = "Nearby Wikis";
   nWikisButton.addEventListener("click", switchCardList);
@@ -342,6 +351,10 @@ function generateTabButtons(){
     uWikisButton.disabled = false;
     nWikisButton.disabled = true;
   }
+  window.setTimeout(function () {
+    mySpotButton.classList.remove("tab-btn-container-hidden");
+  }, 1000);
+  
 }
 
 function generateCards(userPos){
@@ -389,10 +402,6 @@ function generateCards(userPos){
         clearCardList();
       }
 
-      if ((currUser && usersWikis.length != 0) && document.getElementById("mSpotButton") == null){
-        generateTabButtons();
-      }
-
       for (i = 0; i < usersWikis.length; i++){
         createCard(usersWikis[i].title, usersWikis[i].lat, usersWikis[i].lon, "user");
       }
@@ -404,6 +413,11 @@ function generateCards(userPos){
       for (i = 0; i < nearbyWikis.length; i++){
         createCard(nearbyWikis[i].title, nearbyWikis[i].lat, nearbyWikis[i].lon, "nearby");
       }
+
+      if ((currUser && usersWikis.length != 0) && document.getElementById("mSpotButton") == null){
+        generateTabButtons();
+      }
+
       //<div class="bottom-text">bottom text</div>
       let bottomTextElement = document.createElement('div');
       bottomTextElement.setAttribute("class", "bottom-text");

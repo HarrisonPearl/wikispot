@@ -180,6 +180,7 @@ a​:hover {
   color: rgb(160, 160, 160);
   font-size: large;
   text-align: center;
+  margin-bottom: 3%;
 }
 
 .login-btn {
@@ -269,23 +270,35 @@ a​:hover {
   background-color: transparent;
   color: rgb(160, 160, 160);
   font-size: x-large;
-  box-shadow: 0 4px 2px -2px gray;
+  box-shadow: 0 -4px 6px -3px grey;
+  min-width: 48%;
+  transition: 300ms;
 }
 
 .tab-btn:hover {
-  opacity: 60%;
+  opacity: 80%;
+}
+
+.tab-active {
+  min-width: 51.6%;
+  transform: translate(0%, -6%);
 }
 
 .tab-btn-container {
   position: absolute;
-  top: 38vh;
+  top: 40vh;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 50%;
+  width: 85%;
   justify-content: space-between;
   display: flex;
+  height: 12%;
+  transition: 1s;;
 }
 
+.tab-btn-container-hidden {
+  top: 60vh;
+}
 
 .compass {
     position: relative;
@@ -401,6 +414,8 @@ a​:hover {
   font-variant: normal; 
   font-weight: 900; 
   transition: 0.2s;
+
+  z-index: 1;
 }
 
 .card-list-container {
