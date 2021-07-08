@@ -340,16 +340,26 @@ function generateTabButtons(){
   document.getElementById("body").appendChild(mySpotButton);
 
   let nWikisButton = document.createElement('button');
-  nWikisButton.setAttribute("class", "button tab-btn tab-active");
+  if (!showUserWikis){
+    nWikisButton.setAttribute("class", "button tab-btn tab-active");
+  }
+  else{
+    nWikisButton.setAttribute("class", "button tab-btn");
+  }
   nWikisButton.setAttribute("id", "nwButton");
   nWikisButton.innerHTML = "Nearby Wikis";
   nWikisButton.addEventListener("click", switchCardList);
   document.getElementById("mSpotButton").appendChild(nWikisButton);
 
   let uWikisButton = document.createElement('button');
-  uWikisButton.setAttribute("class", "button tab-btn");
+  if (showUserWikis){
+    uWikisButton.setAttribute("class", "button tab-btn tab-active");
+  }
+  else{
+    uWikisButton.setAttribute("class", "button tab-btn");
+  }
   uWikisButton.setAttribute("id", "uwButton");
-  uWikisButton.innerHTML = "User Wikis";
+  uWikisButton.innerHTML = "My Wikis";
   uWikisButton.addEventListener("click", switchCardList);
   document.getElementById("mSpotButton").appendChild(uWikisButton);
 
