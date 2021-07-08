@@ -127,6 +127,7 @@ a​:hover {
 .delete-btn {
   color: rgb(160, 160, 160);
   font-size: x-large;
+  z-index: 4;
 }
 
 .delete-btn:hover {

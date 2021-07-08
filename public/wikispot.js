@@ -3,7 +3,7 @@ let compass;
 let isIOS;
 let isMobile = null;
 let usersWikis = [];
-let usersWikisTitles = {};
+let usersWikisTitlesAndKeys = {};
 let showUserWikis = false;
 let dbRefUserSpots;
 let currUser = null;
@@ -93,14 +93,14 @@ function handleSnap(snap) {
     numUserWikis += 1;
   }*/
   for (const key in snap.val()){
-    console.log(snap.val()[key]);
+    console.log(key);//this needs to be stored in order to allow for deletion later
     usersWikis.push(snap.val()[key]);
-    if (!(snap.val()[key].title in usersWikisTitles)){
-      usersWikisTitles[snap.val()[key].title] = "";
+    if (!(snap.val()[key].title in usersWikisTitlesAndKeys)){
+      usersWikisTitlesAndKeys[snap.val()[key].title] = key;
     }
   }
   console.log(usersWikis);
-  console.log("titles", usersWikisTitles);
+  console.log("titles", usersWikisTitlesAndKeys);
   
 }
 
@@ -248,7 +248,9 @@ function logoutUser(){
       switchCardList();
     }
     mySpotsBtn = document.getElementById("mSpotButton");
-    mySpotsBtn.remove();
+    if (mySpotsBtn){
+      mySpotsBtn.remove();
+    }
 
     let loginBtn = document.createElement('button');
     loginBtn.setAttribute("class", "button login-btn");
@@ -303,9 +305,9 @@ function buildCardList(){
       .getCurrentPosition(generateCards, console.log);
     startBtn.remove();
     
-    if ((currUser && usersWikis.length != 0) && document.getElementById("mSpotButton") == null){
+    /*if ((currUser && usersWikis.length != 0) && document.getElementById("mSpotButton") == null){
       generateTabButtons();
-    }
+    }*/
   }
   else {
     alert("Please enable geolocation services")
@@ -383,6 +385,13 @@ function generateCards(userPos){
         }
       );
 
+      if (document.querySelector(".wikicard")){
+        clearCardList();
+      }
+
+      if ((currUser && usersWikis.length != 0) && document.getElementById("mSpotButton") == null){
+        generateTabButtons();
+      }
 
       for (i = 0; i < usersWikis.length; i++){
         createCard(usersWikis[i].title, usersWikis[i].lat, usersWikis[i].lon, "user");
@@ -465,7 +474,6 @@ function generateCards(userPos){
 }
 
 
-
 function createCard(title, lat, lon, listType){
   let distanceFromUser = coordDistance(lat, lon, userPosition.coords.latitude, userPosition.coords.longitude, "M");
   let angleFromUser = calcDegreeToPoint(userPosition.coords.latitude, userPosition.coords.longitude, lat, lon,)
@@ -480,8 +488,11 @@ function createCard(title, lat, lon, listType){
         "<div class='compass-circle' dist=" + distanceFromUser.toString() + " ang=" + angleFromUser.toString() + "></div>" : "") +
       "<div class='my-point'></div>" +
     "</a>" +
-    (((distanceFromUser < 0.2 && !(title in usersWikisTitles)) && currUser)?
-      `<div class="button save-btn" onclick="saveWiki(this, '${title.replaceAll("'", "specialApos").replaceAll('"', "specialQuote")}', ${lat}, ${lon})">save</div>` : "<div class='delete-container-y'><div class ='button delete-btn' onclick='confirmDelete(this)'>remove</div></div>");
+    (((distanceFromUser < 0.2 && !(title in usersWikisTitlesAndKeys)) && currUser)?
+      `<div class="button save-btn" onclick="saveWiki(this, '${title.replaceAll("'", "specialApos").replaceAll('"', "specialQuote")}', ${lat}, ${lon})">save</div>` : "") +
+    (listType == "user" ?
+      `<div class='delete-container-y'><div class ='button delete-btn' onclick='confirmDelete(this)'>remove</div></div>` : "");
+
   if (listType == "user") {
     document.getElementById("user-card-list").appendChild(element);
   }
@@ -522,7 +533,7 @@ function confirmDelete(dbtn){
 
   ybtn = document.createElement('div');
   ybtn.setAttribute("class", "delete-btn-yes");
-  ybtn.setAttribute("onClick", "card.remove()");
+  ybtn.setAttribute("onClick", "deleteCard(card)");
   ybtn.innerHTML = "yes";
   xcon.appendChild(ybtn);
 
@@ -534,6 +545,22 @@ function confirmDelete(dbtn){
 
 }
 
+function deleteCard(card){
+  let title = card.querySelector(".cardText").innerHTML;
+  let uniKey = usersWikisTitlesAndKeys[title];
+  
+  console.log(uniKey);
+  dbRefUserSpots.child(uniKey).remove();
+  //card.remove();
+  delete usersWikisTitlesAndKeys[title];
+  console.log(usersWikisTitlesAndKeys);
+  
+  buildCardList();
+  if(showUserWikis && usersWikis.length == 0){
+    switchCardList();
+  }
+}
+
 function cancelDelete(msg, xcon, ybtn, nbtn, dcontainer){
   msg.remove();
   ybtn.remove();
@@ -543,7 +570,7 @@ function cancelDelete(msg, xcon, ybtn, nbtn, dcontainer){
   let delbtn = document.createElement('div');
   delbtn.setAttribute("class", "button delete-btn");
   delbtn.setAttribute("onClick", "confirmDelete(this)");
-  delbtn.innerHTML = "delete";
+  delbtn.innerHTML = "remove";
   dcontainer.appendChild(delbtn);
 
 }
@@ -602,9 +629,9 @@ function calcDegreeToPoint(lat1, lon1, lat2, lon2) {
 }
 
 function clearCardList(){
-  let currCardList = document.querySelector(".card-list");
-  currCardList.classList.add("card-list-left");
-  wikiCards = document.querySelectorAll(".wikicard").forEach(wc => wc.remove());
+  document.querySelectorAll(".wikicard").forEach(wc => wc.remove());
+  document.querySelector(".bottom-text").remove();
+  document.querySelector(".tab-btn-container").remove();
 }
 
 window.onload = init;
