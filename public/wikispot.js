@@ -553,34 +553,34 @@ function saveWiki(element, atitle, alat, alon){
 }
 
 function confirmDelete(dbtn){
-  dcontainer = dbtn.parentElement;
-  card = dcontainer.parentElement;
+  let dcontainer = dbtn.parentElement;
   dbtn.remove();
 
-  msg = document.createElement('div');
+  let msg = document.createElement('div');
   msg.setAttribute("class", "delete-messege");
   msg.innerHTML = "delete wikispot permanently?";
   dcontainer.appendChild(msg);
 
-  xcon = document.createElement('div');
+  let xcon = document.createElement('div');
   xcon.setAttribute("class", "delete-container-x");
   dcontainer.appendChild(xcon);
 
-  ybtn = document.createElement('div');
+  let ybtn = document.createElement('div');
   ybtn.setAttribute("class", "delete-btn-yes");
-  ybtn.setAttribute("onClick", "deleteCard(card)");
+  ybtn.setAttribute("onClick", "deleteCard(this)");
   ybtn.innerHTML = "yes";
   xcon.appendChild(ybtn);
 
-  nbtn = document.createElement('div');
+  let nbtn = document.createElement('div');
   nbtn.setAttribute("class", "delete-btn-no");
-  nbtn.setAttribute("onClick", "cancelDelete(msg, xcon, ybtn, nbtn, dcontainer)");
+  nbtn.setAttribute("onClick", "cancelDelete(this)"); // these are setting univerasally, need to pass specific instance instead
   nbtn.innerHTML = "no";
   xcon.appendChild(nbtn);
 
 }
 
-function deleteCard(card){
+function deleteCard(yesbtn){
+  let card = yesbtn.parentElement.parentElement.parentElement;
   let title = card.querySelector(".cardText").innerHTML;
   let uniKey = usersWikisTitlesAndKeys[title];
   
@@ -598,17 +598,22 @@ function deleteCard(card){
   buildCardList();
 }
 
-function cancelDelete(msg, xcon, ybtn, nbtn, dcontainer){
-  msg.remove();
+function cancelDelete(nobtn){
+  
+  let xcon = nobtn.parentElement;
+  let ycon = xcon.parentElement;
+  ycon.querySelector(".delete-messege").remove();
+  ycon.querySelector(".delete-container-x").remove();
+  /*msg.remove();
   ybtn.remove();
   nbtn.remove();
-  xcon.remove();
+  xcon.remove();*/
 
   let delbtn = document.createElement('div');
   delbtn.setAttribute("class", "button delete-btn");
   delbtn.setAttribute("onClick", "confirmDelete(this)");
   delbtn.innerHTML = "remove";
-  dcontainer.appendChild(delbtn);
+  ycon.appendChild(delbtn);
 
 }
 
