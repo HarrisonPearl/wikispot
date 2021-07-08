@@ -8,6 +8,7 @@ let showUserWikis = false;
 let dbRefUserSpots;
 let currUser = null;
 let userPosition = null;
+let initialTab = true;
 
 /////////////
 // Check for signed in user, load their wikis in userWikis if a user exists
@@ -325,7 +326,16 @@ function buildCardList(){
 
 function generateTabButtons(){
   let mySpotButton = document.createElement('div');
-  mySpotButton.setAttribute("class", "tab-btn-container tab-btn-container-hidden");
+  if (initialTab){
+    mySpotButton.setAttribute("class", "tab-btn-container tab-btn-container-hidden");
+    initialTab = false;
+    console.log("initial tab set false");
+  }
+  else {
+    mySpotButton.setAttribute("class", "tab-btn-container");
+    console.log("initial tab was false");
+  }
+  
   mySpotButton.setAttribute("id", "mSpotButton");
   document.getElementById("body").appendChild(mySpotButton);
 
@@ -353,7 +363,7 @@ function generateTabButtons(){
   }
   window.setTimeout(function () {
     mySpotButton.classList.remove("tab-btn-container-hidden");
-  }, 1000);
+  }, 500);
   
 }
 
@@ -516,9 +526,10 @@ function createCard(title, lat, lon, listType){
 }
 
 function saveWiki(element, atitle, alat, alon){
-  if (usersWikis.length == 0){
+  /*if (usersWikis.length == 0){
+    console.log(initialTab);
     generateTabButtons();
-  }
+  }*/
 
   console.log("save");
   let newSpot = {};
@@ -569,10 +580,12 @@ function deleteCard(card){
   delete usersWikisTitlesAndKeys[title];
   console.log(usersWikisTitlesAndKeys);
   
-  buildCardList();
+  
   if(showUserWikis && usersWikis.length == 0){
+    initialTab = true;
     switchCardList();
   }
+  buildCardList();
 }
 
 function cancelDelete(msg, xcon, ybtn, nbtn, dcontainer){

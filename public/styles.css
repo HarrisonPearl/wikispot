@@ -293,7 +293,7 @@ a​:hover {
   justify-content: space-between;
   display: flex;
   height: 12%;
-  transition: 1s;;
+  transition: 0.5s;
 }
 
 .tab-btn-container-hidden {
