@@ -630,8 +630,10 @@ function calcDegreeToPoint(lat1, lon1, lat2, lon2) {
 
 function clearCardList(){
   document.querySelectorAll(".wikicard").forEach(wc => wc.remove());
-  document.querySelector(".bottom-text").remove();
-  document.querySelector(".tab-btn-container").remove();
+  let bt = document.querySelector(".bottom-text");
+  let tbc = document.querySelector(".tab-btn-container");
+  (bt ? bt.remove() : "");
+  (tbc ? tbc.remove() : "");
 }
 
 window.onload = init;
