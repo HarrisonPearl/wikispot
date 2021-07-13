@@ -48,7 +48,9 @@ firebase.auth().onAuthStateChanged(function(user) {
     console.log("got one", user);
 
     loginBtn = document.querySelector(".login-btn");
-    loginBtn.remove();
+    if (loginBtn){
+      loginBtn.remove();
+    }
 
     let currUserSign = document.createElement('div');
     currUserSign.setAttribute("class", "curr-user-sign");
@@ -82,6 +84,11 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
   else {
     console.log("no user, didnt get one");
+    let loginBtn = document.createElement('button');
+    loginBtn.setAttribute("class", "button login-btn");
+    loginBtn.addEventListener("click", openAuthWindow);
+    loginBtn.innerHTML = "log in to start collecting wikispots"
+    document.getElementById("body").appendChild(loginBtn);
   }
 });
 
@@ -132,9 +139,6 @@ function init() {
   startBtn = document.querySelector(".start-btn");
   startBtn.addEventListener("click", buildCardList);
 
-  loginBtn = document.querySelector(".login-btn");
-  loginBtn.addEventListener("click", openAuthWindow);
-
   isIOS = (
     navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
     navigator.userAgent.match(/AppleWebKit/)
@@ -155,8 +159,8 @@ function switchCardList(){
     document.getElementById("user-card-list").classList.remove("collapsed");
     cListCountainer.classList.add("shift-left");
 
-    uWikisButton.classList.add("tab-active");
-    nWikisButton.classList.remove("tab-active");
+    nWikisButton.classList.add("tab-active");
+    uWikisButton.classList.remove("tab-active");
 
     window.setTimeout(function () {
       document.getElementById("card-list").classList.add("collapsed");
@@ -167,9 +171,9 @@ function switchCardList(){
   else {
     document.getElementById("card-list").classList.remove("collapsed");
     cListCountainer.classList.remove("shift-left");
-
-    nWikisButton.classList.add("tab-active");
-    uWikisButton.classList.remove("tab-active");
+    
+    uWikisButton.classList.add("tab-active");
+    nWikisButton.classList.remove("tab-active");
 
     window.setTimeout(function () {
       document.getElementById("user-card-list").classList.add("collapsed");
@@ -262,13 +266,6 @@ function logoutUser(){
       mySpotsBtn.remove();
     }
 
-    let loginBtn = document.createElement('button');
-    loginBtn.setAttribute("class", "button login-btn");
-    loginBtn.addEventListener("click", openAuthWindow);
-    loginBtn.innerHTML = "Log In / Sign Up"
-    document.getElementById("body").appendChild(loginBtn);
-    currUser = null;
-
     saveBtns = document.querySelectorAll(".save-btn").forEach(sb => sb.remove());
     logoutButton = document.querySelector(".logout-btn");
     logoutButton.remove();
@@ -333,14 +330,14 @@ function generateTabButtons(){
   }
   else {
     mySpotButton.setAttribute("class", "tab-btn-container");
-    console.log("initial tab was false");
+    //console.log("initial tab was false");
   }
   
   mySpotButton.setAttribute("id", "mSpotButton");
   document.getElementById("body").appendChild(mySpotButton);
 
   let nWikisButton = document.createElement('button');
-  if (!showUserWikis){
+  if (showUserWikis){
     nWikisButton.setAttribute("class", "button tab-btn tab-active");
   }
   else{
@@ -352,7 +349,7 @@ function generateTabButtons(){
   document.getElementById("mSpotButton").appendChild(nWikisButton);
 
   let uWikisButton = document.createElement('button');
-  if (showUserWikis){
+  if (!showUserWikis){
     uWikisButton.setAttribute("class", "button tab-btn tab-active");
   }
   else{
@@ -574,7 +571,7 @@ function confirmDelete(dbtn){
   let nbtn = document.createElement('div');
   nbtn.setAttribute("class", "delete-btn-no");
   nbtn.setAttribute("onClick", "cancelDelete(this)"); // these are setting univerasally, need to pass specific instance instead
-  nbtn.innerHTML = "no";
+  nbtn.innerHTML = "cancel";
   xcon.appendChild(nbtn);
 
 }
