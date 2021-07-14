@@ -52,16 +52,20 @@ firebase.auth().onAuthStateChanged(function(user) {
       loginBtn.remove();
     }
 
+    let userMenu = document.createElement('div');
+    userMenu.setAttribute("class", "user-menu");
+    document.getElementById("body").appendChild(userMenu);
+
     let currUserSign = document.createElement('div');
     currUserSign.setAttribute("class", "curr-user-sign");
     currUserSign.innerHTML = "Hi, " + user.displayName.substr(0,user.displayName.indexOf(' '));
-    document.getElementById("body").appendChild(currUserSign);
+    userMenu.appendChild(currUserSign);
 
     let logoutButton = document.createElement('button');
     logoutButton.setAttribute("class", "button logout-btn");
     logoutButton.addEventListener("click", logoutUser)
     logoutButton.innerHTML = "Log Out"
-    document.getElementById("body").appendChild(logoutButton);
+    userMenu.appendChild(logoutButton);
     /*
     let mySpotButton = document.createElement('button');
     mySpotButton.setAttribute("class", "button my-spots-btn");
@@ -84,11 +88,24 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
   else {
     console.log("no user, didnt get one");
+
+    //<button class="button start-btn">Find Wikispots</button>
+    //TODO: this should only happen if there isnt already a start btn and there isnt already cards
+    if (!document.querySelector(".start-btn") && !document.querySelector(".wikicard"))
+    {
+      let startBtn = document.createElement('button');
+      startBtn.setAttribute("class", "button start-btn");
+      startBtn.addEventListener("click", buildCardList);
+      startBtn.innerHTML = "Find Wikispots"
+      document.getElementById("body").insertBefore(startBtn, document.querySelector(".card-list-container"));
+    }
+    
     let loginBtn = document.createElement('button');
     loginBtn.setAttribute("class", "button login-btn");
     loginBtn.addEventListener("click", openAuthWindow);
     loginBtn.innerHTML = "log in to start collecting wikispots"
-    document.getElementById("body").appendChild(loginBtn);
+    //document.getElementById("body").appendChild(loginBtn);
+    document.getElementById("body").insertBefore(loginBtn, document.querySelector(".title-card").nextSibling);
   }
 });
 
@@ -109,7 +126,15 @@ function handleSnap(snap) {
   }
   console.log(usersWikis);
   console.log("titles", usersWikisTitlesAndKeys);
-  
+
+  //<button class="button start-btn">Find Wikispots</button>
+  let startBtn = document.createElement('button');
+  startBtn.setAttribute("class", "button start-btn");
+  startBtn.addEventListener("click", buildCardList);
+  startBtn.innerHTML = "Find Wikispots"
+  document.getElementById("body").insertBefore(startBtn, document.querySelector(".card-list-container"));
+
+  //buildCardList();
 }
 
 ///////
@@ -134,10 +159,6 @@ function init() {
       }
     });
   }
-
-  // Button setup
-  startBtn = document.querySelector(".start-btn");
-  startBtn.addEventListener("click", buildCardList);
 
   isIOS = (
     navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
@@ -270,6 +291,8 @@ function logoutUser(){
     logoutButton = document.querySelector(".logout-btn");
     logoutButton.remove();
 
+    usersWikis = [];
+
     firebase.auth().signOut().then(() => {
       console.log("user signed out")
     }).catch((error) => {
@@ -310,7 +333,7 @@ function buildCardList(){
   if (window.navigator.geolocation) {
     window.navigator.geolocation
       .getCurrentPosition(generateCards, console.log);
-    startBtn.remove();
+    document.querySelector(".start-btn").remove();
     
     /*if ((currUser && usersWikis.length != 0) && document.getElementById("mSpotButton") == null){
       generateTabButtons();
@@ -334,7 +357,8 @@ function generateTabButtons(){
   }
   
   mySpotButton.setAttribute("id", "mSpotButton");
-  document.getElementById("body").appendChild(mySpotButton);
+  //ocument.getElementById("body").appendChild(mySpotButton);
+  document.getElementById("body").insertBefore(mySpotButton, document.querySelector(".card-list-container"));
 
   let nWikisButton = document.createElement('button');
   if (showUserWikis){
@@ -553,6 +577,8 @@ function confirmDelete(dbtn){
   let dcontainer = dbtn.parentElement;
   dbtn.remove();
 
+  dcontainer.classList.add("delete-container-y-expanded");
+
   let msg = document.createElement('div');
   msg.setAttribute("class", "delete-messege");
   msg.innerHTML = "delete wikispot permanently?";
@@ -605,6 +631,8 @@ function cancelDelete(nobtn){
   ybtn.remove();
   nbtn.remove();
   xcon.remove();*/
+
+  ycon.classList.remove("delete-container-y-expanded");
 
   let delbtn = document.createElement('div');
   delbtn.setAttribute("class", "button delete-btn");

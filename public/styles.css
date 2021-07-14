@@ -10,25 +10,24 @@ body{
   overflow-x: hidden;
   height: 99%;
   margin: 0.5vw;
-  
-  
+  justify-items: center;
 }
 
 h1 {
   
-  font-family: "Hoefler Text", "Baskerville Old Face", Garamond, "Times New Roman", serif;
-  font-size: 68px;
-  letter-spacing: 4px;
-  word-spacing: 0.2px;
-  color: #2C2C2C;
-  font-weight: 700;
-  text-decoration: none;
-  font-style: normal;
-  font-variant: normal;
-  text-transform: uppercase;
-  text-align: center;
-  margin-bottom: 20vh;
-  margin-top: 20vh;
+font-family: "Hoefler Text", "Baskerville Old Face", Garamond, "Times New Roman", serif;
+font-size: 68px;
+letter-spacing: 4px;
+word-spacing: 0.2px;
+color: #2C2C2C;
+font-weight: 700;
+text-decoration: none;
+font-style: normal;
+font-variant: normal;
+text-transform: uppercase;
+text-align: center;
+margin-bottom: 10vh;
+margin-top: 20vh;
 }
 
 a {
@@ -131,10 +130,6 @@ a:visited {
   z-index: 4;
   font-family: Frutiger,
   "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  position: absolute;
-  bottom: 8%;
-  left: 50%;
-  transform: translateX(-50%);
   border-radius: 12px;
   padding: 1px 28px;
   background-color: white;
@@ -150,25 +145,31 @@ a:visited {
   justify-content: space-between;
   display: flex;
   flex-direction: row;
-  width: -webkit-fill-available;
+  /* width: -webkit-fill-available; */
   margin-bottom: 1%;
 }
 
 .delete-container-y {
   border: 3px solid #F1F4F6;
   border-radius: 12px;
-  padding: 1px 30px;
+  padding: 5px 30px;
   color: rgb(160, 160, 160);
   position: absolute;
   bottom: 3%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 4;
-  justify-content: center;
+  justify-content: space-evenly;
   display: flex;
   flex-direction: column;
   background-color: #fdfcfd;
   border-radius: 12px;
+  transition: 0.2s;
+}
+
+.delete-container-y-expanded {
+  height: 84%;
+  width: 90%;
 }
 
 .delete-btn-yes {
@@ -180,6 +181,7 @@ a:visited {
   color: rgb(255 255 255);
   font-size: x-large;
   font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  padding: 10px 0px;
 }
 
 
@@ -193,25 +195,25 @@ a:visited {
   color: white;
   font-size: x-large;
   font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  padding: 10px 0px;
 }
 
 
 
 .delete-messege {
   color: rgb(160, 160, 160);
-  font-size: xx-large;
+  font-size: 50px;
   text-align: center;
-  margin-bottom: 1%;
+  /*margin-bottom: 1%;*/
   font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .login-btn {
   background-color: rgba(255, 94, 0, 0.7);
   text-transform: capitalize;
-  position: absolute;
-  left: 50%;
-  top: 44%;
-  transform: translate(-50%, -50%);
+  position: relative;
   border-radius: 20px;
   display: inline-block;
   cursor: pointer;
@@ -223,20 +225,24 @@ a:visited {
   text-transform: capitalize;
   min-width: 80%;
   min-height: 13%;
+  display: flex;
+  margin: auto;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4%;
 }
 
 
 
 .logout-btn {
-  background-color: white;
-  position: absolute;
-  top: 4vh;
-  left: 3.2vw;
+  background-color: #e8ebf3;
   color: #ff5e00b3;
   font-size: x-large;
   border-radius: 12px;
   padding: 4px 16px;
   opacity: 60%;
+  padding: 0px;
+  text-align: justify;
 }
 
 
@@ -266,10 +272,7 @@ a:visited {
 
 
 .start-btn {
-  position: absolute;
-  left: 50%;
-  top: 61%;
-  transform: translate(-50%, -50%);
+  position: relative;
   background-color: #4678ff;
   border-radius: 20px;
   display: inline-block;
@@ -282,6 +285,11 @@ a:visited {
   text-transform: capitalize;
   min-width: 80%;
   min-height: 13%;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4%;
+  align-items: center;
 }
 
 
@@ -304,19 +312,18 @@ a:visited {
 }
 
 .tab-btn-container {
-  position: absolute;
-  top: 38vh;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 85%;
+  position: relative;
+  width: 80%;
   justify-content: space-between;
   display: flex;
   height: 8%;
   transition: 0.5s;
+  margin: auto;
+  margin-bottom: 3%;
 }
 
 .tab-btn-container-hidden {
-  top: 50vh;
+  transform: translate(0%, 160%);
 }
 
 .compass {
@@ -385,11 +392,8 @@ a:visited {
 }
 
 .curr-user-sign {
-  position: absolute;
-  top: 1vh;
-  left: 3.5vw;
   color: rgb(160, 160, 160);
-  font-size: x-large;
+  font-size: xx-large;
   border: none;
   background: none;
   font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -403,14 +407,20 @@ a:visited {
   z-index: 4;
   color: white;
   font-size: xx-large;
-  border-radius: 24px;
+  border-radius: 12px;
   padding: 1px 80px;
   background-color: #f59c6b;
   letter-spacing: 5px;
   text-transform: capitalize;
 }
 
-
+.user-menu {
+  position: absolute;
+  top: 4%;
+  left: 3%;
+  display: flex;
+  flex-direction: column;
+}
 
 .wikicard {
   position: relative;
