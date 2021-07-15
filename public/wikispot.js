@@ -63,8 +63,8 @@ firebase.auth().onAuthStateChanged(function(user) {
 
     let logoutButton = document.createElement('button');
     logoutButton.setAttribute("class", "button logout-btn");
-    logoutButton.addEventListener("click", logoutUser)
-    logoutButton.innerHTML = "Log Out"
+    logoutButton.addEventListener("click", logoutUser);
+    logoutButton.innerHTML = "Log Out";
     userMenu.appendChild(logoutButton);
     /*
     let mySpotButton = document.createElement('button');
@@ -128,11 +128,14 @@ function handleSnap(snap) {
   console.log("titles", usersWikisTitlesAndKeys);
 
   //<button class="button start-btn">Find Wikispots</button>
-  let startBtn = document.createElement('button');
-  startBtn.setAttribute("class", "button start-btn");
-  startBtn.addEventListener("click", buildCardList);
-  startBtn.innerHTML = "Find Wikispots"
-  document.getElementById("body").insertBefore(startBtn, document.querySelector(".card-list-container"));
+  if (!document.querySelector(".start-btn") && !document.querySelector(".wikicard"))
+  {
+    let startBtn = document.createElement('button');
+    startBtn.setAttribute("class", "button start-btn");
+    startBtn.addEventListener("click", buildCardList);
+    startBtn.innerHTML = "Find Wikispots"
+    document.getElementById("body").insertBefore(startBtn, document.querySelector(".card-list-container"));
+  }
 
   //buildCardList();
 }
@@ -166,6 +169,15 @@ function init() {
   ); 
 }
 
+function refreshCardList() {
+  let refBtn = document.querySelector(".refresh-btn");
+  refBtn.classList.add("refresh-btn-rotate");
+  window.setTimeout(function () {
+    buildCardList()
+    refBtn.classList.remove("refresh-btn-rotate");
+  }, 1000);
+  
+}
 // card list control
 
 function switchCardList(){
@@ -173,10 +185,13 @@ function switchCardList(){
   let cListCountainer = document.querySelector(".card-list-container");
   let uWikisButton = document.getElementById("uwButton");
   let nWikisButton = document.getElementById("nwButton");
+  let logoutButton = document.querySelector(".logout-btn");
+  logoutButton.disabled = true;
   uWikisButton.disabled = true;
   nWikisButton.disabled = true;
   if (showUserWikis) {
     
+    document.getElementById("card-list").classList.remove("collapsed");
     document.getElementById("user-card-list").classList.remove("collapsed");
     cListCountainer.classList.add("shift-left");
 
@@ -186,11 +201,13 @@ function switchCardList(){
     window.setTimeout(function () {
       document.getElementById("card-list").classList.add("collapsed");
       nWikisButton.disabled = false;
+      logoutButton.disabled = false;
     }, 1000);
     
   }
   else {
     document.getElementById("card-list").classList.remove("collapsed");
+    document.getElementById("user-card-list").classList.remove("collapsed");
     cListCountainer.classList.remove("shift-left");
     
     uWikisButton.classList.add("tab-active");
@@ -199,6 +216,7 @@ function switchCardList(){
     window.setTimeout(function () {
       document.getElementById("user-card-list").classList.add("collapsed");
       uWikisButton.disabled = false;
+      logoutButton.disabled = false;
     }, 1000);
   }
 
@@ -320,7 +338,7 @@ function buildCardList(){
         if (response === "granted") {
           window.addEventListener("deviceorientation", handler, true);
         } else {
-          alert("has to be allowed!");
+          alert("Orientation has to be allowed for the app to function");
         }
       })
       .catch((response) => alert(response));
@@ -333,7 +351,7 @@ function buildCardList(){
   if (window.navigator.geolocation) {
     window.navigator.geolocation
       .getCurrentPosition(generateCards, console.log);
-    document.querySelector(".start-btn").remove();
+
     
     /*if ((currUser && usersWikis.length != 0) && document.getElementById("mSpotButton") == null){
       generateTabButtons();
@@ -464,6 +482,19 @@ function generateCards(userPos){
       bottomTextElement.setAttribute("class", "bottom-text");
       bottomTextElement.innerHTML = "move to find more wikis :)";
       document.getElementById("card-list").appendChild(bottomTextElement);
+
+      //<div class="refresh-btn"></div>
+      if (!document.querySelector(".refresh-btn")){
+        let refBtn = document.createElement('div');
+        refBtn.setAttribute("class", "refresh-btn");
+        refBtn.addEventListener("click", refreshCardList);
+        document.getElementById("body").appendChild(refBtn);
+      }
+
+      let startBtn = document.querySelector(".start-btn");
+      if (startBtn) {
+        startBtn.remove();
+      }
 
       /*window.setTimeout(function () {
         document.getElementById("card-list").classList.remove("card-list-left");
