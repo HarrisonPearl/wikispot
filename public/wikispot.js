@@ -739,8 +739,10 @@ function clearCardList(){
   document.querySelectorAll(".wikicard").forEach(wc => wc.remove());
   let bt = document.querySelector(".bottom-text");
   let tbc = document.querySelector(".tab-btn-container");
+  let coffeeBtn = document.querySelector(".coffee-btn");
   (bt ? bt.remove() : "");
   (tbc ? tbc.remove() : "");
+  (coffeeBtn ? coffeeBtn.remove() : "");
 }
 
 window.onload = init;
