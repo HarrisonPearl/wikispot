@@ -483,6 +483,15 @@ function generateCards(userPos){
       bottomTextElement.innerHTML = "move to find more wikis :)";
       document.getElementById("card-list").appendChild(bottomTextElement);
 
+      if (usersWikis.length != 0 && !document.querySelector(".coffee-btn")){
+        let coffeeBtn = document.createElement('a');
+        coffeeBtn.setAttribute("class", "coffee-btn");
+        coffeeBtn.innerHTML = "Enjoying Wikispots? Buy Me a Coffee!";
+        coffeeBtn.href = "https://buymeacoffee.com/harrisonpearl";
+        document.getElementById("user-card-list").appendChild(coffeeBtn);
+      }
+      //<div class="coffee-button">Enjoying Wikispots? Buy Me a Coffee</div>
+
       //<div class="refresh-btn"></div>
       if (!document.querySelector(".refresh-btn")){
         let refBtn = document.createElement('div');
