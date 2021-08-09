@@ -308,14 +308,22 @@ function openAuthWindow() {
 
 function logoutUser(){
   if (currUser){
-    currUserSign = document.querySelector(".curr-user-sign");
-    currUserSign.remove();
+    
     if(showUserWikis){
       switchCardList();
     }
-    mySpotsBtn = document.getElementById("mSpotButton");
+
+    let currUserSign = document.querySelector(".curr-user-sign");
+    if (currUserSign) {
+      currUserSign.remove();
+    }
+    let mySpotsBtn = document.getElementById("mSpotButton");
     if (mySpotsBtn){
       mySpotsBtn.remove();
+    }
+    let userScoreSign = document.querySelector(".user-score-sign");
+    if (userScoreSign){
+      userScoreSign.remove();
     }
 
     saveBtns = document.querySelectorAll(".save-btn").forEach(sb => sb.remove());
