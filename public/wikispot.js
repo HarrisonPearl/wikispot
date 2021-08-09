@@ -4,11 +4,14 @@ let isIOS;
 let isMobile = null;
 let usersWikis = [];
 let usersWikisTitlesAndKeys = {};
+let nearbyWikis = [];
 let showUserWikis = false;
 let dbRefUserSpots;
 let currUser = null;
+let userScore = 0;
 let userPosition = null;
 let initialTab = true;
+let refreshFlag = false;
 
 /////////////
 // Check for signed in user, load their wikis in userWikis if a user exists
@@ -28,7 +31,7 @@ firebase.auth()
     }
     // The signed-in user info.
     var user = result.user;
-    console.log(user.uid);
+    //console.log(user.uid);
     
   }).catch((error) => {
     // Handle Errors here.
@@ -39,13 +42,13 @@ firebase.auth()
     // The firebase.auth.AuthCredential type that was used.
     var credential = error.credential;
     // ...
-    console.log("No User Signed In");
+    //console.log("No User Signed In");
   });
 
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     currUser = user;
-    console.log("got one", user);
+    //console.log("got one", user);
 
     loginBtn = document.querySelector(".login-btn");
     if (loginBtn){
@@ -87,7 +90,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 
   }
   else {
-    console.log("no user, didnt get one");
+    //console.log("no user, didnt get one");
 
     //<button class="button start-btn">Find Wikispots</button>
     //TODO: this should only happen if there isnt already a start btn and there isnt already cards
@@ -96,36 +99,42 @@ firebase.auth().onAuthStateChanged(function(user) {
       let startBtn = document.createElement('button');
       startBtn.setAttribute("class", "button start-btn");
       startBtn.addEventListener("click", buildCardList);
-      startBtn.innerHTML = "Find Wikispots"
+      startBtn.innerHTML = "Find"
       document.getElementById("body").insertBefore(startBtn, document.querySelector(".card-list-container"));
     }
     
     let loginBtn = document.createElement('button');
     loginBtn.setAttribute("class", "button login-btn");
     loginBtn.addEventListener("click", openAuthWindow);
-    loginBtn.innerHTML = "log in to start collecting wikispots"
+    loginBtn.innerHTML = "<div class='login-text'>Log In</div><div class='login-subtext'>Collect</div>"
     //document.getElementById("body").appendChild(loginBtn);
     document.getElementById("body").insertBefore(loginBtn, document.querySelector(".title-card").nextSibling);
   }
 });
 
 function handleSnap(snap) {
-  console.log("made it to the snap");
+  //console.log("made it to the snap");
   usersWikis = [];
   /*for (i = 0; i < Object.keys(snap.val()).length; i++){
-    console.log(snap.val()[i]);
+    //console.log(snap.val()[i]);
     usersWikis.push(snap.val()[i]);
     numUserWikis += 1;
   }*/
   for (const key in snap.val()){
-    console.log(key);//this needs to be stored in order to allow for deletion later
+    //console.log(key);//this needs to be stored in order to allow for deletion later
     usersWikis.push(snap.val()[key]);
     if (!(snap.val()[key].title in usersWikisTitlesAndKeys)){
       usersWikisTitlesAndKeys[snap.val()[key].title] = key;
     }
   }
-  console.log(usersWikis);
-  console.log("titles", usersWikisTitlesAndKeys);
+  getUserScore();
+  
+
+
+
+
+  //console.log(usersWikis);
+  //console.log("titles", usersWikisTitlesAndKeys);
 
   //<button class="button start-btn">Find Wikispots</button>
   if (!document.querySelector(".start-btn") && !document.querySelector(".wikicard"))
@@ -133,7 +142,7 @@ function handleSnap(snap) {
     let startBtn = document.createElement('button');
     startBtn.setAttribute("class", "button start-btn");
     startBtn.addEventListener("click", buildCardList);
-    startBtn.innerHTML = "Find Wikispots"
+    startBtn.innerHTML = "Find"
     document.getElementById("body").insertBefore(startBtn, document.querySelector(".card-list-container"));
   }
 
@@ -181,6 +190,10 @@ function refreshCardList() {
 // card list control
 
 function switchCardList(){
+  if (refreshFlag) {
+    refreshFlag = false;
+    buildCardList();
+  }
   showUserWikis = !showUserWikis;
   let cListCountainer = document.querySelector(".card-list-container");
   let uWikisButton = document.getElementById("uwButton");
@@ -312,9 +325,9 @@ function logoutUser(){
     usersWikis = [];
 
     firebase.auth().signOut().then(() => {
-      console.log("user signed out")
+      //console.log("user signed out")
     }).catch((error) => {
-      console.log(error)
+      //console.log(error)
     });
   }
   
@@ -337,6 +350,20 @@ function buildCardList(){
       .then((response) => {
         if (response === "granted") {
           window.addEventListener("deviceorientation", handler, true);
+
+          // ask for user position permission, if granted, generate cards
+          if (window.navigator.geolocation) {
+            window.navigator.geolocation
+              .getCurrentPosition(generateCards, console.log);
+
+            
+            /*if ((currUser && usersWikis.length != 0) && document.getElementById("mSpotButton") == null){
+              generateTabButtons();
+            }*/
+          }
+          else {
+            alert("Please enable geolocation services")
+          }
         } else {
           alert("Orientation has to be allowed for the app to function");
         }
@@ -345,21 +372,24 @@ function buildCardList(){
   } 
   else {
     window.addEventListener("deviceorientationabsolute", handler, true);
+
+    // ask for user position permission, if granted, generate cards
+    if (window.navigator.geolocation) {
+      window.navigator.geolocation
+        .getCurrentPosition(generateCards, console.log);
+
+      
+      /*if ((currUser && usersWikis.length != 0) && document.getElementById("mSpotButton") == null){
+        generateTabButtons();
+      }*/
+    }
+    else {
+      alert("Please enable geolocation services")
+    }
+
   }
 
-  // ask for user position permission, if granted, generate cards
-  if (window.navigator.geolocation) {
-    window.navigator.geolocation
-      .getCurrentPosition(generateCards, console.log);
-
-    
-    /*if ((currUser && usersWikis.length != 0) && document.getElementById("mSpotButton") == null){
-      generateTabButtons();
-    }*/
-  }
-  else {
-    alert("Please enable geolocation services")
-  }
+  
 }
 
 function generateTabButtons(){
@@ -367,7 +397,7 @@ function generateTabButtons(){
   if (initialTab){
     mySpotButton.setAttribute("class", "tab-btn-container tab-btn-container-hidden");
     initialTab = false;
-    console.log("initial tab set false");
+    //console.log("initial tab set false");
   }
   else {
     mySpotButton.setAttribute("class", "tab-btn-container");
@@ -430,7 +460,7 @@ function generateCards(userPos){
     format: "json"
   };
 
-  var nearbyWikis = [];
+  nearbyWikis = [];
 
   url = url + "?origin=*";
   Object.keys(params).forEach(function(key){url += "&" + key + "=" + params[key];});
@@ -439,7 +469,8 @@ function generateCards(userPos){
     .then(function(response){return response.json();})
     .then(function(response) {
       let pages = response.query.geosearch;
-      console.log(pages[0]);
+      //console.log(pages[0]);
+
       for (let place in pages) {
         nearbyWikis.push(pages[place]);
       }
@@ -461,36 +492,47 @@ function generateCards(userPos){
         clearCardList();
       }
 
+      //<div class="bottom-text">bottom text</div>
+      if (!document.querySelector(".bottom-text")){
+        let bottomTextElement = document.createElement('div');
+        bottomTextElement.setAttribute("class", "bottom-text");
+        bottomTextElement.innerHTML = "Move To Find More! :)";
+        document.getElementById("card-list").appendChild(bottomTextElement);
+      }
+      
+      //<div class="coffee-button">Enjoying Wikispots? Want to Buy Me a Coffee? Cool! Thanks!</div>
+      if (usersWikis.length != 0 && !document.querySelector(".coffee-btn")){
+        let coffeeBtn = document.createElement('a');
+        coffeeBtn.setAttribute("class", "coffee-btn");
+        coffeeBtn.innerHTML = "Enjoying Wikispots? Want to Buy Me a Coffee? Cool! Thanks!";
+        coffeeBtn.href = "https://buymeacoffee.com/harrisonpearl";
+        document.getElementById("user-card-list").appendChild(coffeeBtn);
+      }
+      
+      /*
       for (i = 0; i < usersWikis.length; i++){
         createCard(usersWikis[i].title, usersWikis[i].lat, usersWikis[i].lon, "user");
+        //console.log(usersWikis[i].title);
+        //console.log(getWikiValue(usersWikis[i].title));
       }
-
-      /*window.setTimeout(function () {
-        document.getElementById("card-list").classList.remove("card-list-left");
-      }, 1000);*/
+      
 
       for (i = 0; i < nearbyWikis.length; i++){
         createCard(nearbyWikis[i].title, nearbyWikis[i].lat, nearbyWikis[i].lon, "nearby");
+      }*/
+      if (usersWikis.length > 0){
+        createCards(0, "user");
       }
+      if (nearbyWikis.length > 0){
+        createCards(0, "nearby");
+      }
+      
+
+
 
       if ((currUser && usersWikis.length != 0) && document.getElementById("mSpotButton") == null){
         generateTabButtons();
       }
-
-      //<div class="bottom-text">bottom text</div>
-      let bottomTextElement = document.createElement('div');
-      bottomTextElement.setAttribute("class", "bottom-text");
-      bottomTextElement.innerHTML = "move to find more wikis :)";
-      document.getElementById("card-list").appendChild(bottomTextElement);
-
-      if (usersWikis.length != 0 && !document.querySelector(".coffee-btn")){
-        let coffeeBtn = document.createElement('a');
-        coffeeBtn.setAttribute("class", "coffee-btn");
-        coffeeBtn.innerHTML = "Enjoying Wikispots? Buy Me a Coffee!";
-        coffeeBtn.href = "https://buymeacoffee.com/harrisonpearl";
-        document.getElementById("user-card-list").appendChild(coffeeBtn);
-      }
-      //<div class="coffee-button">Enjoying Wikispots? Buy Me a Coffee</div>
 
       //<div class="refresh-btn"></div>
       if (!document.querySelector(".refresh-btn")){
@@ -561,56 +603,179 @@ function generateCards(userPos){
         }, 1000);
       }   */   
 
-      compassCircles = document.querySelectorAll(".compass-circle");
-      console.log("num of wikis");
-      console.log(nearbyWikis.length);
+      //compassCircles = document.querySelectorAll(".compass-circle");
+      //console.log("num of wikis");
+      //console.log(nearbyWikis.length);
     })
     .catch(function(error){console.log(error);});
 }
 
-
-function createCard(title, lat, lon, listType){
-  let distanceFromUser = coordDistance(lat, lon, userPosition.coords.latitude, userPosition.coords.longitude, "M");
-  let angleFromUser = calcDegreeToPoint(userPosition.coords.latitude, userPosition.coords.longitude, lat, lon,)
-  let element = document.createElement('div');
-  element.setAttribute("class", "wikicard")
-  element.innerHTML = 
-    "<a class='cardText' href=" + makeWikiLink(title) + ">" + title + "</a>" +
-    "<a class='compass' href='https://www.google.com/maps/search/?api=1&query=" + lat.toString() + "," + lon.toString() + "'>" +
-      "<div class='distance'>" + distanceFromUser.toFixed(2).toString() + " mi</div>" +
-      "<div class='arrow'></div>" +
-      (distanceFromUser > 0.2 ?
-        "<div class='compass-circle' dist=" + distanceFromUser.toString() + " ang=" + angleFromUser.toString() + "></div>" : "") +
-      "<div class='my-point'></div>" +
-    "</a>" +
-    (((distanceFromUser < 0.2 && !(title in usersWikisTitlesAndKeys)) && currUser)?
-      `<div class="button save-btn" onclick="saveWiki(this, '${title.replaceAll("'", "specialApos").replaceAll('"', "specialQuote")}', ${lat}, ${lon})">save</div>` : "") +
-    (listType == "user" ?
-      `<div class='delete-container-y'><div class ='button delete-btn' onclick='confirmDelete(this)'>remove</div></div>` : "");
-
-  if (listType == "user") {
-    document.getElementById("user-card-list").appendChild(element);
+function createCards(i, listType){
+  let title;
+  let lat;
+  let lon;
+  let repeat;
+  if (listType == "user"){
+    title = usersWikis[i].title;
+    lat = usersWikis[i].lat;
+    lon = usersWikis[i].lon;
+    repeat = (i < usersWikis.length - 1);
   }
-  else {
-    document.getElementById("card-list").appendChild(element);
+  else{
+    title = nearbyWikis[i].title;
+    lat = nearbyWikis[i].lat;
+    lon = nearbyWikis[i].lon;
+    listLength = nearbyWikis.length;
+    repeat = (i < nearbyWikis.length - 1);
   }
+  
+  //console.log(title.replaceAll("/", "%2F").replaceAll(" ", "%20").replaceAll("'", "%27"));
+  // this could be done once instead
+	let today = new Date();
+  let dd = String(today.getDate()).padStart(2, '0');
+  let mm = String(today.getMonth() + 1).padStart(2, '0'); 	//January is 0!
+  let yyyy = today.getFullYear();
+
+  today = yyyy + mm + dd;
+  let yearago = String(parseInt(yyyy) - 1) + mm + dd;
+
+
+  fetch(`https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/all-agents/${title.replaceAll("/", "%2F").replaceAll(" ", "%20").replaceAll("'", "%27")}/monthly/${yearago}/${today}`)
+    .then(response => { return response.json() })
+    .then(res => {
+      let count = 0;
+      if (res.items) {
+        for (const month of res.items) { 
+          count += month.views
+         }
+      }
+      //console.log(title);
+      //console.log(convert(count));
+      let wikiValue = convert(count);
+
+      let distanceFromUser = coordDistance(lat, lon, userPosition.coords.latitude, userPosition.coords.longitude, "M");
+      let angleFromUser = calcDegreeToPoint(userPosition.coords.latitude, userPosition.coords.longitude, lat, lon,)
+      let element = document.createElement('div');
+      element.setAttribute("class", "wikicard")
+      element.innerHTML = 
+        "<a class='cardText' href=" + makeWikiLink(title) + ">" + title + "</a>" +
+        "<a class='compass' href='https://www.google.com/maps/search/?api=1&query=" + lat.toString() + "," + lon.toString() + "'>" +
+          "<div class='distance'>" + distanceFromUser.toFixed(2).toString() + " mi</div>" +
+          "<div class='arrow'></div>" +
+          (distanceFromUser > 0.2 ?
+            "<div class='compass-circle' dist=" + distanceFromUser.toString() + " ang=" + angleFromUser.toString() + "></div>" : "") +
+          "<div class='my-point'></div>" +
+        "</a>" +
+        (((distanceFromUser < 0.2 && !(title in usersWikisTitlesAndKeys)) && currUser)?
+          `<div class="button save-btn" onclick="saveWiki(this, '${title.replaceAll("'", "specialApos").replaceAll('"', "specialQuote")}', ${lat}, ${lon})">+ ${wikiValue}</div>` : "") +
+        (listType == "user" ?
+          `<div class='delete-container-y'><div class ='button delete-btn' onclick='confirmDelete(this)'>...</div></div>` : "");
+
+      if (listType == "user") {
+        document.getElementById("user-card-list").insertBefore(element, document.querySelector(".coffee-btn"));
+      }
+      else {
+        document.getElementById("card-list").insertBefore(element, document.querySelector(".bottom-text"));
+      }
+
+      compassCircles = document.querySelectorAll(".compass-circle");
+
+      //if done, update the compass circles list
+      if (repeat) {
+        createCards(i + 1, listType)
+      }
+    })
+    .catch(function(error){console.log("error getting wikivalue");});
+
 }
 
+/*
+function createCard(title, lat, lon, listType){
+  //console.log(title.replaceAll("/", "%2F").replaceAll(" ", "%20").replaceAll("'", "%27"));
+  // this could be done once instead
+	let today = new Date();
+  let dd = String(today.getDate()).padStart(2, '0');
+  let mm = String(today.getMonth() + 1).padStart(2, '0'); 	//January is 0!
+  let yyyy = today.getFullYear();
+
+  today = yyyy + mm + dd;
+  let yearago = String(parseInt(yyyy) - 1) + mm + dd;
+
+
+  fetch(`https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/all-agents/${title.replaceAll("/", "%2F").replaceAll(" ", "%20").replaceAll("'", "%27")}/monthly/${yearago}/${today}`)
+    .then(response => { return response.json() })
+    .then(res => {
+      let count = 0;
+      if (res.items) {
+        for (const month of res.items) { 
+          count += month.views
+         }
+      }
+      //console.log(title);
+      //console.log(convert(count));
+      let wikiValue = convert(count);
+
+      let distanceFromUser = coordDistance(lat, lon, userPosition.coords.latitude, userPosition.coords.longitude, "M");
+      let angleFromUser = calcDegreeToPoint(userPosition.coords.latitude, userPosition.coords.longitude, lat, lon,)
+      let element = document.createElement('div');
+      element.setAttribute("class", "wikicard")
+      element.innerHTML = 
+        "<a class='cardText' href=" + makeWikiLink(title) + ">" + title + "</a>" +
+        "<a class='compass' href='https://www.google.com/maps/search/?api=1&query=" + lat.toString() + "," + lon.toString() + "'>" +
+          "<div class='distance'>" + distanceFromUser.toFixed(2).toString() + " mi</div>" +
+          "<div class='arrow'></div>" +
+          (distanceFromUser > 0.2 ?
+            "<div class='compass-circle' dist=" + distanceFromUser.toString() + " ang=" + angleFromUser.toString() + "></div>" : "") +
+          "<div class='my-point'></div>" +
+        "</a>" +
+        (((distanceFromUser < 0.2 && !(title in usersWikisTitlesAndKeys)) && currUser)?
+          `<div class="button save-btn" onclick="saveWiki(this, '${title.replaceAll("'", "specialApos").replaceAll('"', "specialQuote")}', ${lat}, ${lon})">+ ${wikiValue} points</div>` : "") +
+        (listType == "user" ?
+          `<div class='delete-container-y'><div class ='button delete-btn' onclick='confirmDelete(this)'>...</div></div>` : "");
+
+      if (listType == "user") {
+        document.getElementById("user-card-list").insertBefore(element, document.querySelector(".coffee-btn"));
+      }
+      else {
+        document.getElementById("card-list").insertBefore(element, document.querySelector(".bottom-text"));
+      }
+    })
+    .catch(function(error){console.log("error getting wikivalue");});
+
+}*/
+
 function saveWiki(element, atitle, alat, alon){
+  refreshFlag = true;
   /*if (usersWikis.length == 0){
     console.log(initialTab);
     generateTabButtons();
   }*/
 
-  console.log("save");
+  //console.log("save");
+
   let newSpot = {};
   newSpot['title'] = atitle.replaceAll("specialApos", "'").replaceAll("specialQuote", '"');
   newSpot['lat'] = alat;
   newSpot['lon'] = alon;
   dbRefUserSpots.push(newSpot);
+
+  eParent = element.parentElement;
   element.remove();
 
-  buildCardList();
+  let savedText = document.createElement('div');
+  savedText.setAttribute("class", "saved-text");
+  savedText.innerHTML = "saved";
+  eParent.appendChild(savedText);
+
+  window.setTimeout(function () {
+    savedText.classList.add("faded");
+    window.setTimeout(function () {
+      savedText.remove();
+      //buildCardList();
+    }, 2000);
+  }, 2000);  
+    
+
 }
 
 function confirmDelete(dbtn){
@@ -621,7 +786,7 @@ function confirmDelete(dbtn){
 
   let msg = document.createElement('div');
   msg.setAttribute("class", "delete-messege");
-  msg.innerHTML = "delete wikispot permanently?";
+  msg.innerHTML = "delete wikispot?";
   dcontainer.appendChild(msg);
 
   let xcon = document.createElement('div');
@@ -643,22 +808,32 @@ function confirmDelete(dbtn){
 }
 
 function deleteCard(yesbtn){
+  refreshFlag = true;
   let card = yesbtn.parentElement.parentElement.parentElement;
   let title = card.querySelector(".cardText").innerHTML;
   let uniKey = usersWikisTitlesAndKeys[title];
   
-  console.log(uniKey);
+  //console.log(uniKey);
   dbRefUserSpots.child(uniKey).remove();
   //card.remove();
   delete usersWikisTitlesAndKeys[title];
-  console.log(usersWikisTitlesAndKeys);
+  //console.log(usersWikisTitlesAndKfaeys);
+
+  card.classList.add("faded");
+  window.setTimeout(function () {
+    card.classList.add("shrunk");
+    window.setTimeout(function () {
+      card.remove();
+    }, 1000); 
+  }, 1000); 
   
   
+  // check if deleting the last  (only) user wiki
   if(showUserWikis && usersWikis.length == 0){
     initialTab = true;
     switchCardList();
   }
-  buildCardList();
+  //buildCardList();
 }
 
 function cancelDelete(nobtn){
@@ -677,7 +852,7 @@ function cancelDelete(nobtn){
   let delbtn = document.createElement('div');
   delbtn.setAttribute("class", "button delete-btn");
   delbtn.setAttribute("onClick", "confirmDelete(this)");
-  delbtn.innerHTML = "remove";
+  delbtn.innerHTML = "...";
   ycon.appendChild(delbtn);
 
 }
@@ -711,7 +886,7 @@ function coordDistance(lat1, lon1, lat2, lon2, unit) {
 
 function handler(e) {
   compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
-  console.log("compass"); 
+  //console.log("compass"); 
   if (compassCircles != undefined){
     for (i = 0; i < compassCircles.length; i++){
       angleOffset = compassCircles[i].getAttribute("ang");
@@ -745,4 +920,82 @@ function clearCardList(){
   (coffeeBtn ? coffeeBtn.remove() : "");
 }
 
+
+function getUserScore(){
+  userScore = 0;
+  let userScoreSign = document.querySelector(".user-score-sign");
+  if (!userScoreSign){
+    userScoreSign = document.createElement('div');
+    userScoreSign.setAttribute("class", "user-score-sign");
+    userScoreSign.innerHTML = `Your Wikiscore: ${userScore}`;
+    document.querySelector(".user-menu").insertBefore(userScoreSign, document.querySelector(".logout-btn"));
+  }
+  
+
+  for (const wiki of usersWikis){
+    title = wiki.title;
+
+    title.replaceAll(" ", "_").replaceAll("'", "%27")
+    let today = new Date();
+    let dd = String(today.getDate()).padStart(2, '0');
+    let mm = String(today.getMonth() + 1).padStart(2, '0'); 	//January is 0!
+    let yyyy = today.getFullYear();
+  
+    today = yyyy + mm + dd;
+    let yearago = String(parseInt(yyyy) - 1) + mm + dd;
+  
+  
+    fetch(`https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/all-agents/${title}/monthly/${yearago}/${today}`)
+      .then(response => { return response.json() })
+      .then(res => {
+        let count = 0;
+        for (const month of res.items) { 
+         count += month.views
+        }
+        userScore += convert(count);
+        userScoreSign.innerHTML = `Your Wikiscore: ${userScore}`;
+      });
+  }
+
+  window.setTimeout(function () {
+    console.log("wikiscore");
+    console.log(userScore);
+  }, 1000);  
+}
+
+
+
+/* function getWikiValue(title) {
+  title.replaceAll(" ", "_").replaceAll("'", "%27")
+	let today = new Date();
+  let dd = String(today.getDate()).padStart(2, '0');
+  let mm = String(today.getMonth() + 1).padStart(2, '0'); 	//January is 0!
+  let yyyy = today.getFullYear();
+
+  today = yyyy + mm + dd;
+  let yearago = String(parseInt(yyyy) - 1) + mm + dd;
+
+
+  fetch(`https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/all-agents/${title}/monthly/${yearago}/${today}`)
+    .then(response => { return response.json() })
+    .then(res => {
+      let count = 0;
+      for (const month of res.items) { 
+       count += month.views
+      }
+      console.log(convert(count));
+      return convert(count);
+    });
+}
+ */
+
+function convert(n) {
+    var order = Math.floor(Math.log(n) / Math.LN10
+                       + 0.000000001); // because float math
+    return Math.ceil(Math.pow(10,order - 3));
+}
+
 window.onload = init;
+
+
+//todo: get updates when user position changes, and update distance and angle properites
