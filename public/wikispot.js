@@ -352,7 +352,11 @@ function closeAuthWindow(){
 
 // card list building
 function buildCardList(){
-  // get orientation permission
+  let startBtn = document.querySelector(".start-btn");
+  if (startBtn) {
+    startBtn.remove();
+  }
+  // get permissions
   if (isIOS) {
     DeviceOrientationEvent.requestPermission()
       .then((response) => {
@@ -397,6 +401,57 @@ function buildCardList(){
 
   }
 
+  
+}
+
+function refreshPosition(){
+  if (window.navigator.geolocation) {
+    window.navigator.geolocation
+      .getCurrentPosition(refreshCompasses, console.log);
+  }
+}
+
+function refreshCompasses(userPosition){
+  //<div class='distance'>" + distanceFromUser.toFixed(2).toString() + " mi</div>
+  nearbyList = document.getElementById("card-list");
+  nearbyCards = nearbyList.children;
+  userList = document.getElementById("user-card-list");
+  userCards = userList.children;
+
+  for (i = 0; i < nearbyCards.length; i++){
+    let distText = nearbyCards[i].querySelector(".distance");
+    if (distText){
+      newDist = coordDistance(nearbyWikis[i].lat, nearbyWikis[i].lon, userPosition.coords.latitude, userPosition.coords.longitude, "M")
+      distText.innerHTML = newDist.toFixed(2).toString();
+    }
+
+    // get compass circles angles if there is a compass circle and update them
+    let compassCircle = nearbyCards[i].querySelector(".compass-circle");
+    if (compassCircle){
+      compassCircle.setAttribute("ang", calcDegreeToPoint(userPosition.coords.latitude, userPosition.coords.longitude, nearbyWikis[i].lat, nearbyWikis[i].lon).toString());
+    }
+
+  }
+
+  for (i = 0; i < userCards.length; i++){
+    let distText = userCards[i].querySelector(".distance");
+    if (distText){
+      newDist = coordDistance(usersWikis[i].lat, usersWikis[i].lon, userPosition.coords.latitude, userPosition.coords.longitude, "M")
+      distText.innerHTML = newDist.toFixed(2).toString();
+    }
+
+    // get compass circles angles if there is a compass circle and update them
+    let compassCircle = userCards[i].querySelector(".compass-circle");
+    if (compassCircle){
+      compassCircle.setAttribute("ang", calcDegreeToPoint(userPosition.coords.latitude, userPosition.coords.longitude, usersWikis[i].lat, usersWikis[i].lon).toString());
+    }
+
+  }
+
+  window.setTimeout(function () {
+    refreshPosition();
+  }, 10000); //10s
+  
   
 }
 
@@ -550,10 +605,7 @@ function generateCards(userPos){
         document.getElementById("body").appendChild(refBtn);
       }
 
-      let startBtn = document.querySelector(".start-btn");
-      if (startBtn) {
-        startBtn.remove();
-      }
+      
 
       /*window.setTimeout(function () {
         document.getElementById("card-list").classList.remove("card-list-left");
@@ -662,7 +714,7 @@ function createCards(i, listType){
       let wikiValue = convert(count);
 
       let distanceFromUser = coordDistance(lat, lon, userPosition.coords.latitude, userPosition.coords.longitude, "M");
-      let angleFromUser = calcDegreeToPoint(userPosition.coords.latitude, userPosition.coords.longitude, lat, lon,)
+      let angleFromUser = calcDegreeToPoint(userPosition.coords.latitude, userPosition.coords.longitude, lat, lon);
       let element = document.createElement('div');
       element.setAttribute("class", "wikicard")
       element.innerHTML = 
@@ -691,6 +743,9 @@ function createCards(i, listType){
       //if done, update the compass circles list
       if (repeat) {
         createCards(i + 1, listType)
+      }
+      else{
+        refreshPosition();
       }
     })
     .catch(function(error){console.log("error getting wikivalue");});
