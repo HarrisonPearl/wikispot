@@ -224,6 +224,10 @@ a:visited {
   text-transform: capitalize;
 }
 
+.hidden {
+  display: none;
+}
+
 .login-btn {
   background-color: rgba(255, 94, 0, 0.7);
   text-transform: capitalize;

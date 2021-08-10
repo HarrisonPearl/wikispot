@@ -191,8 +191,9 @@ function refreshCardList() {
 
 function switchCardList(){
   if (refreshFlag) {
-    refreshFlag = false;
     buildCardList();
+    refreshFlag = false;
+    console.log(refreshFlag);
   }
   showUserWikis = !showUserWikis;
   let cListCountainer = document.querySelector(".card-list-container");
@@ -413,37 +414,90 @@ function refreshPosition(){
 
 function refreshCompasses(userPosition){
   //<div class='distance'>" + distanceFromUser.toFixed(2).toString() + " mi</div>
-  nearbyList = document.getElementById("card-list");
-  nearbyCards = nearbyList.children;
-  userList = document.getElementById("user-card-list");
-  userCards = userList.children;
+  let nearbyList = document.getElementById("card-list");
+  let nearbyCards = nearbyList.querySelectorAll(".wikicard");
+  let userList = document.getElementById("user-card-list");
+  let userCards = userList.querySelectorAll(".wikicard");
 
-  for (i = 0; i < nearbyCards.length; i++){
+  for (i = 0; i < nearbyCards.length && i < nearbyWikis.length; i++){
     let distText = nearbyCards[i].querySelector(".distance");
+    let nLat = nearbyCards[i].querySelector(".save-btn").getAttribute("latitude");
+    let nLon = nearbyCards[i].querySelector(".save-btn").getAttribute("longitude");
     if (distText){
-      newDist = coordDistance(nearbyWikis[i].lat, nearbyWikis[i].lon, userPosition.coords.latitude, userPosition.coords.longitude, "M")
+      //console.log(i);
+      // heres where you left off !!!!!!!!!!!!!!
+      // switch to accessing lat an lon through the save btn that attached now
+      newDist = coordDistance(nLat, nLon, userPosition.coords.latitude, userPosition.coords.longitude, "M")
       distText.innerHTML = newDist.toFixed(2).toString();
+      
+      if (newDist < 0.2 && nearbyCards[i].querySelector(".compass-circle")) {
+        if(!nearbyCards[i].querySelector(".compass-circle").classList.contains('hidden')) nearbyCards[i].querySelector(".compass-circle").classList.add('hidden');
+      }
+
+      if (newDist > 0.2 && nearbyCards[i].querySelector(".compass-circle")) {
+        if(nearbyCards[i].querySelector(".compass-circle").classList.contains('hidden')) nearbyCards[i].querySelector(".compass-circle").classList.remove('hidden');
+      }
+
+      if ((newDist < 0.2 && !(nearbyCards[i].querySelector(".cardText").innerHTML in usersWikisTitlesAndKeys)) && currUser){
+        if(nearbyCards[i].querySelector(".save-btn").classList.contains('hidden')) nearbyCards[i].querySelector(".save-btn").classList.remove('hidden');
+      }
+      /*
+      if ((newDist < 0.2 && !(nearbyCards[i].querySelector(".cardText").innerHTML in usersWikisTitlesAndKeys)) && currUser){
+        // need access to the wiki value
+
+        let today = new Date();
+        let dd = String(today.getDate()).padStart(2, '0');
+        let mm = String(today.getMonth() + 1).padStart(2, '0'); 	//January is 0!
+        let yyyy = today.getFullYear();
+      
+        today = yyyy + mm + dd;
+        let yearago = String(parseInt(yyyy) - 1) + mm + dd;
+        console.log(nearbyCards[i].querySelector(".cardText").innerHTML);
+
+        fetch(`https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/all-agents/${nearbyCards[i].querySelector(".cardText").innerHTML.toString().replaceAll("/", "%2F").replaceAll(" ", "%20").replaceAll("'", "%27")}/monthly/${yearago}/${today}`)
+        .then(response => { return response.json() })
+        .then(res => {
+          let count = 0;
+          if (res.items) {
+            for (const month of res.items) { 
+              count += month.views
+             }
+          }
+          //console.log(title);
+          //console.log(convert(count));
+          let wikiValue = convert(count);
+          //console.log(wikiValue);
+          nearbyCards[i].innerHTML = nearbyCards[i].innerHTML + `<div class="button save-btn" onclick="saveWiki(this, '${nearbyCards[i].querySelector(".cardText").innerHTML.toString().replaceAll("'", "specialApos").replaceAll('"', "specialQuote")}', ${nearbyCards[i].lat}, ${nearbyCards[i].lon})">+ ${wikiValue}</div>`;
+          
+        })
+        .catch(function(error){console.log("error getting wikivalue");});
+      }
+      */
     }
 
     // get compass circles angles if there is a compass circle and update them
     let compassCircle = nearbyCards[i].querySelector(".compass-circle");
     if (compassCircle){
-      compassCircle.setAttribute("ang", calcDegreeToPoint(userPosition.coords.latitude, userPosition.coords.longitude, nearbyWikis[i].lat, nearbyWikis[i].lon).toString());
+      compassCircle.setAttribute("ang", calcDegreeToPoint(userPosition.coords.latitude, userPosition.coords.longitude, nLat, nLon).toString());
     }
 
   }
 
   for (i = 0; i < userCards.length; i++){
     let distText = userCards[i].querySelector(".distance");
+    let uLat = userCards[i].querySelector(".save-btn").getAttribute("latitude");
+    let uLon = userCards[i].querySelector(".save-btn").getAttribute("longitude");
     if (distText){
-      newDist = coordDistance(usersWikis[i].lat, usersWikis[i].lon, userPosition.coords.latitude, userPosition.coords.longitude, "M")
+      //console.log(userCards.length);
+      //console.log(usersWikis.length);
+      newDist = coordDistance(uLat, uLon, userPosition.coords.latitude, userPosition.coords.longitude, "M")
       distText.innerHTML = newDist.toFixed(2).toString();
     }
 
     // get compass circles angles if there is a compass circle and update them
     let compassCircle = userCards[i].querySelector(".compass-circle");
     if (compassCircle){
-      compassCircle.setAttribute("ang", calcDegreeToPoint(userPosition.coords.latitude, userPosition.coords.longitude, usersWikis[i].lat, usersWikis[i].lon).toString());
+      compassCircle.setAttribute("ang", calcDegreeToPoint(userPosition.coords.latitude, userPosition.coords.longitude, uLat, uLon).toString());
     }
 
   }
@@ -451,6 +505,7 @@ function refreshCompasses(userPosition){
   window.setTimeout(function () {
     refreshPosition();
   }, 10000); //10s
+  //navigator.geolocation.watchPosition(refreshPosition);
   
   
 }
@@ -723,11 +778,13 @@ function createCards(i, listType){
           "<div class='distance'>" + distanceFromUser.toFixed(2).toString() + " mi</div>" +
           "<div class='arrow'></div>" +
           (distanceFromUser > 0.2 ?
-            "<div class='compass-circle' dist=" + distanceFromUser.toString() + " ang=" + angleFromUser.toString() + "></div>" : "") +
+            "<div class='compass-circle' dist=" + distanceFromUser.toString() + " ang=" + angleFromUser.toString() + "></div>" :
+            "<div class='compass-circle hidden' dist=" + distanceFromUser.toString() + " ang=" + angleFromUser.toString() + "></div>") +
           "<div class='my-point'></div>" +
         "</a>" +
         (((distanceFromUser < 0.2 && !(title in usersWikisTitlesAndKeys)) && currUser)?
-          `<div class="button save-btn" onclick="saveWiki(this, '${title.replaceAll("'", "specialApos").replaceAll('"', "specialQuote")}', ${lat}, ${lon})">+ ${wikiValue}</div>` : "") +
+          `<div class="button save-btn" onclick="saveWiki(this, '${title.replaceAll("'", "specialApos").replaceAll('"', "specialQuote")}', ${lat}, ${lon})" latitude="${lat}" longitude="${lon}">+ ${wikiValue}</div>` :
+          `<div class="button save-btn hidden" onclick="saveWiki(this, '${title.replaceAll("'", "specialApos").replaceAll('"', "specialQuote")}', ${lat}, ${lon})" latitude="${lat}" longitude="${lon}">+ ${wikiValue}</div>`) +
         (listType == "user" ?
           `<div class='delete-container-y'><div class ='button delete-btn' onclick='confirmDelete(this)'>...</div></div>` : "");
 
@@ -807,8 +864,9 @@ function createCard(title, lat, lon, listType){
 
 }*/
 
-function saveWiki(element, atitle, alat, alon){
+function saveWiki(saveBtn, atitle, alat, alon){
   refreshFlag = true;
+  console.log(refreshFlag);
   /*if (usersWikis.length == 0){
     console.log(initialTab);
     generateTabButtons();
@@ -822,8 +880,8 @@ function saveWiki(element, atitle, alat, alon){
   newSpot['lon'] = alon;
   dbRefUserSpots.push(newSpot);
 
-  eParent = element.parentElement;
-  element.remove();
+  eParent = saveBtn.parentElement;
+  saveBtn.classList.add('hidden');
 
   let savedText = document.createElement('div');
   savedText.setAttribute("class", "saved-text");
@@ -875,6 +933,8 @@ function deleteCard(yesbtn){
   let card = yesbtn.parentElement.parentElement.parentElement;
   let title = card.querySelector(".cardText").innerHTML;
   let uniKey = usersWikisTitlesAndKeys[title];
+
+  
   
   //console.log(uniKey);
   dbRefUserSpots.child(uniKey).remove();
@@ -887,6 +947,9 @@ function deleteCard(yesbtn){
     card.classList.add("shrunk");
     window.setTimeout(function () {
       card.remove();
+      usersWikis = usersWikis.filter(function( wik ) {
+        return wik.title !== title;
+      });
     }, 1000); 
   }, 1000); 
   
