@@ -494,12 +494,12 @@ function refreshCompasses(userPosition){
       distText.innerHTML = newDist.toFixed(2).toString();
 
 
-      if (newDist < 0.2 && nearbyCards[i].querySelector(".compass-circle")) {
-        if(!nearbyCards[i].querySelector(".compass-circle").classList.contains('hidden')) nearbyCards[i].querySelector(".compass-circle").classList.add('hidden');
+      if (newDist < 0.2 && userCards[i].querySelector(".compass-circle")) {
+        if(!userCards[i].querySelector(".compass-circle").classList.contains('hidden')) userCards[i].querySelector(".compass-circle").classList.add('hidden');
       }
 
-      if (newDist > 0.2 && nearbyCards[i].querySelector(".compass-circle")) {
-        if(nearbyCards[i].querySelector(".compass-circle").classList.contains('hidden')) nearbyCards[i].querySelector(".compass-circle").classList.remove('hidden');
+      if (newDist > 0.2 && userCards[i].querySelector(".compass-circle")) {
+        if(userCards[i].querySelector(".compass-circle").classList.contains('hidden')) userCards[i].querySelector(".compass-circle").classList.remove('hidden');
       }
     }
 
