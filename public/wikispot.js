@@ -492,6 +492,15 @@ function refreshCompasses(userPosition){
       //console.log(usersWikis.length);
       newDist = coordDistance(uLat, uLon, userPosition.coords.latitude, userPosition.coords.longitude, "M")
       distText.innerHTML = newDist.toFixed(2).toString();
+
+
+      if (newDist < 0.2 && nearbyCards[i].querySelector(".compass-circle")) {
+        if(!nearbyCards[i].querySelector(".compass-circle").classList.contains('hidden')) nearbyCards[i].querySelector(".compass-circle").classList.add('hidden');
+      }
+
+      if (newDist > 0.2 && nearbyCards[i].querySelector(".compass-circle")) {
+        if(nearbyCards[i].querySelector(".compass-circle").classList.contains('hidden')) nearbyCards[i].querySelector(".compass-circle").classList.remove('hidden');
+      }
     }
 
     // get compass circles angles if there is a compass circle and update them
