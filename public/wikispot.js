@@ -428,7 +428,7 @@ function refreshCompasses(userPosition){
       // heres where you left off !!!!!!!!!!!!!!
       // switch to accessing lat an lon through the save btn that attached now
       newDist = coordDistance(nLat, nLon, userPosition.coords.latitude, userPosition.coords.longitude, "M")
-      distText.innerHTML = newDist.toFixed(2).toString();
+      distText.innerHTML = newDist.toFixed(2).toString() + " mi";
       
       if (newDist < 0.2 && nearbyCards[i].querySelector(".compass-circle")) {
         if(!nearbyCards[i].querySelector(".compass-circle").classList.contains('hidden')) nearbyCards[i].querySelector(".compass-circle").classList.add('hidden');
@@ -491,8 +491,7 @@ function refreshCompasses(userPosition){
       //console.log(userCards.length);
       //console.log(usersWikis.length);
       newDist = coordDistance(uLat, uLon, userPosition.coords.latitude, userPosition.coords.longitude, "M")
-      distText.innerHTML = newDist.toFixed(2).toString();
-
+      distText.innerHTML = newDist.toFixed(2).toString() + " mi";
 
       if (newDist < 0.2 && userCards[i].querySelector(".compass-circle")) {
         if(!userCards[i].querySelector(".compass-circle").classList.contains('hidden')) userCards[i].querySelector(".compass-circle").classList.add('hidden');
@@ -522,7 +521,7 @@ function refreshCompasses(userPosition){
 function generateTabButtons(){
   let mySpotButton = document.createElement('div');
   if (initialTab){
-    mySpotButton.setAttribute("class", "tab-btn-container tab-btn-container-hidden");
+    mySpotButton.setAttribute("class", "tab-btn-container tab-btn-container-hidden hidden");
     initialTab = false;
     //console.log("initial tab set false");
   }
@@ -624,16 +623,25 @@ function generateCards(userPos){
         let bottomTextElement = document.createElement('div');
         bottomTextElement.setAttribute("class", "bottom-text");
         bottomTextElement.innerHTML = "Move To Find More! :)";
+        bottomTextElement.classList.add("hidden");
         document.getElementById("card-list").appendChild(bottomTextElement);
+        window.setTimeout(function () {
+          bottomTextElement.classList.remove("hidden");
+        }, 1000);
+
       }
       
       //<div class="coffee-button">Enjoying Wikispots? Want to Buy Me a Coffee? Cool! Thanks!</div>
       if (usersWikis.length != 0 && !document.querySelector(".coffee-btn")){
         let coffeeBtn = document.createElement('a');
         coffeeBtn.setAttribute("class", "coffee-btn");
-        coffeeBtn.innerHTML = "Enjoying Wikispots? Want to Buy Me a Coffee? Cool! Thanks!";
+        coffeeBtn.innerHTML = "<pre>Enjoying Wikispots?\nWant to Buy Me a Coffee?\nCool! Thanks!</pre>";
         coffeeBtn.href = "https://buymeacoffee.com/harrisonpearl";
+        coffeeBtn.classList.add("hidden");
         document.getElementById("user-card-list").appendChild(coffeeBtn);
+        window.setTimeout(function () {
+          coffeeBtn.classList.remove("hidden");
+        }, 1000);
       }
       
       /*
@@ -647,19 +655,20 @@ function generateCards(userPos){
       for (i = 0; i < nearbyWikis.length; i++){
         createCard(nearbyWikis[i].title, nearbyWikis[i].lat, nearbyWikis[i].lon, "nearby");
       }*/
+
       if (usersWikis.length > 0){
         createCards(0, "user");
       }
       if (nearbyWikis.length > 0){
         createCards(0, "nearby");
       }
+
       
-
-
-
       if ((currUser && usersWikis.length != 0) && document.getElementById("mSpotButton") == null){
         generateTabButtons();
       }
+      
+
 
       //<div class="refresh-btn"></div>
       if (!document.querySelector(".refresh-btn")){
@@ -783,6 +792,7 @@ function createCards(i, listType){
       element.setAttribute("class", "wikicard")
       element.innerHTML = 
         "<a class='cardText' href=" + makeWikiLink(title) + ">" + title + "</a>" +
+        `<div class='wiki-value'>${wikiValue}</div>` +
         "<a class='compass' href='https://www.google.com/maps/search/?api=1&query=" + lat.toString() + "," + lon.toString() + "'>" +
           "<div class='distance'>" + distanceFromUser.toFixed(2).toString() + " mi</div>" +
           "<div class='arrow'></div>" +
@@ -792,7 +802,7 @@ function createCards(i, listType){
           "<div class='my-point'></div>" +
         "</a>" +
         (((distanceFromUser < 0.2 && !(title in usersWikisTitlesAndKeys)) && currUser)?
-          `<div class="button save-btn" onclick="saveWiki(this, '${title.replaceAll("'", "specialApos").replaceAll('"', "specialQuote")}', ${lat}, ${lon})" latitude="${lat}" longitude="${lon}">+ ${wikiValue}</div>` :
+          `<div class="button save-btn" onclick="saveWiki(this, '${title.replaceAll("'", "specialApos").replaceAll('"', "specialQuote")}', ${lat}, ${lon})" latitude="${lat}" longitude="${lon}">+</div>` :
           `<div class="button save-btn hidden" onclick="saveWiki(this, '${title.replaceAll("'", "specialApos").replaceAll('"', "specialQuote")}', ${lat}, ${lon})" latitude="${lat}" longitude="${lon}">+ ${wikiValue}</div>`) +
         (listType == "user" ?
           `<div class='delete-container-y'><div class ='button delete-btn' onclick='confirmDelete(this)'>...</div></div>` : "");
@@ -874,6 +884,7 @@ function createCard(title, lat, lon, listType){
 }*/
 
 function saveWiki(saveBtn, atitle, alat, alon){
+  saveBtn.classList.add('hidden');
   refreshFlag = true;
   console.log(refreshFlag);
   /*if (usersWikis.length == 0){
@@ -890,12 +901,15 @@ function saveWiki(saveBtn, atitle, alat, alon){
   dbRefUserSpots.push(newSpot);
 
   eParent = saveBtn.parentElement;
-  saveBtn.classList.add('hidden');
 
   let savedText = document.createElement('div');
   savedText.setAttribute("class", "saved-text");
   savedText.innerHTML = "saved";
   eParent.appendChild(savedText);
+
+  if (!document.querySelector(".tab-btn-container")){
+    generateTabButtons();
+  }
 
   window.setTimeout(function () {
     savedText.classList.add("faded");
